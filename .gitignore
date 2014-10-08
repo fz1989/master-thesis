@@ -107,3 +107,33 @@ sympy-plots-for-*.tex/
 
 # xindy
 *.xdy
+
+# cls and cfg files generated for testing
+xduthesis.cls
+xduthesis.cfg
+# documentation
+xduthesis.pdf
+
+# latex generated fiels
+*.aux
+*.bbl
+*.blg
+*.fls
+*.glo
+*.gls
+*.idx
+*.ilg
+*.ind
+*.log
+*.out
+*.toc
+
+# Emacs generated files
+auto/
+
+# SCons generated files
+.sconsign.dblite
+
+# Example directory
+examples/thesis-*.pdf
+examples/xdu*.eps
