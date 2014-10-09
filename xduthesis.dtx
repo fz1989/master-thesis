@@ -415,7 +415,7 @@
 \renewcommand\frontmatter{%
   \xdu@clearpage%
   \@mainmatterfalse
-  \ifxdu@doctor\pagenumbering{Roman}\else\pagenumbering{roman}\fi
+  \ifxdu@doctor\pagenumbering{Roman}\else\pagenumbering{Roman}\fi
   \pagestyle{xdu@front}}
 \renewcommand\mainmatter{%
   \xdu@clearpage
@@ -585,7 +585,7 @@
   \clearpage%
   \if@openright%
     \ifodd\c@page\relax\else%
-      \null\thispagestyle{xdu@empty}\newpage%
+      \null\thispagestyle{xdu@headings}\newpage%
     \fi%
   \fi}
 %    \end{macrocode}
@@ -616,25 +616,29 @@
         \hfil{\wuhao\noindent\leftmark}%
         \hfil{\ifxdu@doctor\xiaowu\thepage\fi}\hskip1pt}%
       \vskip2pt\ifxdu@doctor\rule{\textwidth}{1mm}\vskip1pt\fi%
-      \rule{\textwidth}{0.75pt}}}%
+      \rule{\textwidth}{0.75pt}\vskip1pt%上面线为1pt粗  
+	  \rule{\textwidth}{0.75pt}}}%
   \def\@evenhead{\vbox{\hbox to\textwidth{%
         \hskip1pt{\ifxdu@doctor\xiaowu\thepage\fi}%
         \hfil{\let\\=\relax\wuhao\rightmark}\hfil}%
       \vskip2pt\ifxdu@doctor\rule{\textwidth}{1mm}\vskip1bp\fi%
-      \rule{\textwidth}{0.75pt}}}%
-  \def\@oddfoot{\ifxdu@doctor\ps@xdu@foot@doctor\else\@empty\fi}%
-  \def\@evenfoot{\ifxdu@doctor\ps@xdu@foot@doctor\else\@empty\fi}}%
-\def\ps@xdu@headings{% 
+      \rule{\textwidth}{0.75pt}\vskip1pt%上面线为1pt粗  
+	  \rule{\textwidth}{0.75pt}}}%
+  \def\@oddfoot{\vbox{\hbox to\textwidth{\hfil\xiaowu\thepage\hfil}}}%
+  \def\@evenfoot{\vbox{\hbox to\textwidth{\hfil\xiaowu\thepage\hfil}}}}%
+\def\ps@xdu@headings{%
   \def\@oddhead{\vbox{\hbox to\textwidth{%
-        \hfil{\wuhao\noindent\leftmark}\hfil{\xiaowu\thepage}\hskip1pt}%
+        \hfil{\wuhao\noindent\leftmark}\hfil{\xiaowu}\hskip1pt}%
       \vskip2pt\ifxdu@doctor\rule{\textwidth}{1mm}\vskip1bp\fi%
-      \rule{\textwidth}{0.75pt}}}%
+      \rule{\textwidth}{0.75pt}\vskip1pt%上面线为1pt粗  
+	  \rule{\textwidth}{0.75pt}}}%
   \def\@evenhead{\vbox{\hbox to\textwidth{%
-        \hskip1pt{\xiaowu\thepage}\hfil{\let\\=\relax\wuhao\rightmark}\hfil}%
+        \hskip1pt{\xiaowu}\hfil{\let\\=\relax\wuhao\rightmark}\hfil}%
       \vskip2pt\ifxdu@doctor\rule{\textwidth}{1mm}\vskip1bp\fi%
-      \rule{\textwidth}{0.75pt}}}%
-  \def\@oddfoot{\ifxdu@doctor\ps@xdu@foot@doctor\else\@empty\fi}%
-  \def\@evenfoot{\ifxdu@doctor\ps@xdu@foot@doctor\else\@empty\fi}}
+       \rule{\textwidth}{0.75pt}\vskip1pt%上面线为1pt粗  
+	   \rule{\textwidth}{0.75pt}}}%
+  \def\@oddfoot{\vbox{\hbox to\textwidth{\hfil\xiaowu\thepage\hfil}}}%
+  \def\@evenfoot{\vbox{\hbox to\textwidth{\hfil\xiaowu\thepage\hfil}}}}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -883,7 +887,7 @@
   \@makechapterhead{#2}}
 \def\@makechapterhead#1{\noindent%
   \parbox[b]{\textwidth}{\vskip15mm}%
-  {\centering \sanhao\hei%
+  {\centering \sanhao\boldsong\bfseries%
     \ifnum \c@secnumdepth > \m@ne%
       \@chapapp\hskip1ex%
     \fi%
@@ -917,7 +921,7 @@
   \@startsection {section}{1}{\z@}%
   {\dimen0}%
   {2ex}%
-  {\sihao[1.429]\filcenter}}
+  {\sihao[1.429]}}
 %    \end{macrocode}
 % \end{macro}
 %
