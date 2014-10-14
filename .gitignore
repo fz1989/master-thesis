@@ -137,3 +137,6 @@ auto/
 # Example directory
 examples/thesis-*.pdf
 examples/xdu*.eps
+*.DS_Store
+*.swp
+*.tar.gz
