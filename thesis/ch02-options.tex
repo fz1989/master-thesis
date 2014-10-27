@@ -2,15 +2,40 @@
 \chapter{云计算资源管理与调度相关技术}
 \label{chap:outline}
 
-对于企业和公司，为了完成各种对外的服
-务以及公司内部业务逻辑，需要大量
-的硬件资源
+对于企业和公司，为了完成各种对外的服务以及公司内部业务逻辑，需要大量
+的硬件资源, 而硬件的资源的代价往往比较昂贵，所以如何充分挖掘硬件资源潜力
+从而增加硬件的利用率shi yi
 
 \section{OpenStack云计算平台}
 
-对于企业和公司，为了完成各种对外的服务以及公司内部业务逻辑，需要大量
-的硬件资源
+OpenStack是一个美国国家航空航天局和Rackspace合作研发的，
+以Apache许可证授权，并且是一个自由软件和开放源代码项目。
 
+OpenStack是一个云平台管理的项目，它不是一个软件。这个项目由几个主要的组件组合起来完成一些具体的工作。
+
+OpenStack是一个旨在为公共及私有云的建设与管理提供软件的开源项目。
+它的社区拥有超过130家企业及1350位开发者，这些机构与个人都将OpenStack作为基础设施即服务（简称IaaS）资源的通用前端。
+OpenStack项目的首要任务是简化云的部署过程并为其带来良好的可扩展性。OpenStack的核心组件有以下9个：
+\begin{itemize}
+\item 计算（Compute）：Nova，Nova是OpenStack云中的计算组织控制器。
+支持OpenStack云中实例（instances）生命周期的所有活动都由Nova处理。
+其中的调度器nova-schedule作为一个守护进程运行，通过恰当的调度算法从可用资源池获得一个计算服务。
+nova-scheduler会根据诸如负载、内存、可用域的物理距离、CPU构架等作出调度决定。
+\item 对象存储（Object）：Swift，其最初是由 Rackspace 公司开发的高可用分布式对象存储服务，
+并于 2010 年贡献给 OpenStack 开源社区作为其最初的核心子项目之一，
+为其 Nova 子项目提供虚机镜像存储服务。Swift 支持多租户模式、容器和对象读写操作，适合解决互联网的应用场景下非结构化数据存储问题。
+\item 镜像（Image）：Glance,用来管理在 OpenStack 集群中的镜像，但不负责实际的存储。
+它为从简单文件系统到对象存储系统（如 OpenStack Swift 项目）的多种存储技术提供了一个抽象。除了实际的磁盘镜像之外，它还保存描述镜像的元数据和状态信息。
+\item 身份（Identity）：Keystone（OpenStack Identity Service）是OpenStack框架中，负责身份验证、服务规则和服务令牌的功能， 它实现了OpenStack的Identity API。
+\item 网络地址管理（Network）：Neutron是OpenStack核心项目之一，提供云计算环境下的虚拟网络功能.
+\item 块存储 (Block)：Cinder--提供块存储（Block Storage），类似于 Amazon 的 EBS 块存储服务，OpenStack 中的实例是不能持久化的，需要挂载 volume，在 volume 中实现持久化。Cinder 就是提供对 volume 实际需要的存储块单元的实现管理功能。
+\item UI 界面 (Dashboard)：Horizon,Horizon套件提供IT人员一个图形化的网页接口，让IT人员可以综观云端服务目前的规模与状态，并且，能够统一存取、部署与管理所有云端服务所使用到的资源。
+\item 测量 (Metering)：Ceilometer,主要负责监控数据的采集，采集的项目包括虚拟机的性能数据，n
+eutron-l3-router使用的网络带宽，glance，cinder，swift等租户使用信息，
+甚至是通过snmp采集物理机的信息，以及采集支持opendaylight的网络设备信息。
+\item 编配 (Orchestration)：Heat 类似于AWS的CloudFormation, heat实现了一种自动化的通过简单定义和配置就能实现的云部署方式。
+可以在heat模板中定义连串相关任务，然后交由heat，由heat按照一定的顺序执行heat模板中定义的一连串任务。利用heat还可以连接到neutron来帮助编排负载均衡和其他网络功能。
+\end{itemize}
 \section{资源管理抽象模型}
 
 对于企业和公司，为了完成各种对外的服务以及公司内部业务逻辑，需要大量
