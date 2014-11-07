@@ -20,8 +20,11 @@
 如果有向图G的每两个顶点都强连通，称G是一个强连通图。
 非强连通图有向图的极大强连通子图，称为强连通分量(strongly connected components)。
 
-下图中，子图{1，2，3}为一个强连通分量，因为顶点1，2，3两两可达。{4}，{5，6}也分别是两个强连通分量。
-
+下图中，子图{1，2，3}为一个强连通分量，因为顶点1，2，3两两可达。{4, 5，6}也分别是一个强连通分量。
+\begin{figure}[htbp]
+\centering\includegraphics[scale=0.5]{SCC}
+\caption{强联通分量关系图}\label{fig:SCC}
+\end{figure}
 直接根据定义，用双向遍历取交集的方法求强连通分量，时间复杂度为O(N*N+M)。更好的方法有算法有，Tarjan算法，Kosaraju算法。
 其中Tarjan算法和Kosaraju算法均是是基于对图深度优先搜索的算法,与Kosaraju算法不同，
 Tarjan算法只进行一遍深度优先搜索索，较Kosaraju算法进行两遍深度优先搜索有30\%的性能提升。
@@ -76,6 +79,10 @@ DFN(v)& \text{(u,v)为指向栈中节点的后向边(非横叉边)}
 
 \subsection{拓扑排序}
 在图论中，如果一个有向图无法从某个顶点出发经过若干条边回到该点，则这个图是一个有向无环图（DAG图）。
+\begin{figure}[htbp]
+\centering\includegraphics[scale=0.5]{DAG}
+\caption{DAG图}\label{fig:DAG}
+\end{figure}
 因为有向图中一个点经过两种路线到达另一个点未必形成环，
 因此有向无环图未必能转化成树，但任何有向树均为有向无环图。如右图，不为有向树，但为有向无环图。
 
@@ -174,7 +181,10 @@ Union或Find操作O($\log n$)。采用按秩合并的Union伪代码如下所示�
 \li			\Return	$\attribii{u}{parent}$
 	\end{codebox}
 \end{algorithm} 
-
+\begin{figure}[htbp]
+\centering\includegraphics[scale=0.5]{Union}
+\caption{按秩合并的Union操作}\label{fig:DAG}
+\end{figure}
 另外一种优化的方式是采用路径压缩，这是一种在执行“查找”时扁平化树结构的方法。
 关键在于在路径上的每个节点都可以直接连接到根上；
 他们都有同样的表示方法。
@@ -182,6 +192,10 @@ Union或Find操作O($\log n$)。采用按秩合并的Union伪代码如下所示�
 改变每一个节点的引用到根节点。
 得到的树将更加扁平，
 为以后直接或者间接引用节点的操作加速。
+\begin{figure}[htbp]
+\centering\includegraphics[scale=0.5]{Find}
+\caption{路径压缩的Find操作}\label{fig:DAG}
+\end{figure}
 采用路径压缩的Find伪代码如下所示：
 \begin{algorithm} 
 	\caption {Union-Set Find} 
@@ -247,6 +261,7 @@ Jain(\textbf{X}) = \frac{{(\sum_{i=1}^{n}{x}_{i})}^{2}}{n\sum_{i=1}^{n}{{x}_{i}}
 
 
 \section{本章小结}
+ 本章详细的介绍了CBDRF算法的基础图论背景和公平性的度量规则，将在下一章中给出j基于上述规则的CBDRF调度系统的设计和实现。
 %% ----------------------------------------------------------------------
 %%% END OF FILE 
 %% ----------------------------------------------------------------------

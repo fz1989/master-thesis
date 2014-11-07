@@ -17,7 +17,90 @@
 \chapter{实验与结果分析}
 \label{cha:backmatter}
 \section{实验环境}
+\subsection{实验硬件平台}
+本实验的硬件环境由以下的工作站和pc节点组成的openstack平台。其中由8个工作站构成的计算节点和4台pc机组成的网络和控制节点。
+
+其中工作站的配置如下所示：
+\begin{table}[htp]
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+CPU & Intel\textregistered Xeon E5-2620 2.0GHZ\\
+\hline
+核数 & 24cores\\
+\hline
+内存 & 128GB\\
+\hline
+硬盘 &  2TB\\
+\hline
+\end{tabular}
+\end{center}
+\caption{计算节点的配置}
+\label{default}
+\end{table}
+
+网络和控制节点的配置如下表所示
+\begin{table}[htp]
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+CPU & Intel\textregistered Core TM i5-3470 3.2GHZ\\
+\hline
+核数 & 4cores\\
+\hline
+内存 & 4GB\\
+\hline
+硬盘 &  500GB\\
+\hline
+\end{tabular}
+\end{center}
+\caption{网络节点和控制节点配置}
+\label{default}
+\end{table}
+
+\subsection{实验软件}
+CBDRF调度算法和调度器采用了python的实现，所用的python的第三方库列举如下：
+\begin{itemize}
+\item Python-Tornado 
+
+Tornado 是 FriendFeed 使用的可扩展的非阻塞式 web 服务器及其相关工具的开源版本。
+主要用来进行进程间接受消息的WebAPI的通信基础。
+\item Python-Requests 
+
+这是一个Http请求的第三方库，用于进行进程间http通信。
+\item Python-MySQLDB  
+
+python连接数据库的第三方库。
+\item Python-SQLAlchemy 
+
+这是资源管理器连接资源监控的数据库的底层。
+\item Python-Numpy 
+
+Scipy的底层数学运算的实现，NumPy系统是Python的一种开源的数字扩展。这种工具可用来存储和处理大型矩阵
+\item Python-Scipy 
+
+Python的科学计算类库。Python scipy的科学计算应用。包括了数据处理,数值计算等内容,数字信号处理,快速傅立叶变换等应用。
+\end{itemize}
+
+
 \section{实验结果和分析}
+\subsection{资源公平性测试}
+3Graph，
+Graph1分配情况柱状图
+Graph2对比filterscheduler，，对比方面针对domainantshare和分配情况，
+Graph3计算各个分配的jains 公平系数。
+\subsection{资源利用率测试}
+3Graph 
+Graph1散点图查看DAG任务资源分配情况，对比filter和DRF的分配散点图
+Graph2另外测试可分配次数，对比filter和DRF的分配次数。
+Graph3同时计算测试资源实际利用情况。
+
+\subsection{任务执行的性能测试}
+3Graph
+Graph1单个测试，说明关联合并的必要性
+Graph2关联任务的执行情况。
+Graph3调度测试对比
+
 
 %% ----------------------------------------------------------------------
 %%% END OF FILE 

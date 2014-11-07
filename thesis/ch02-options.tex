@@ -12,7 +12,10 @@ OpenStack是一个美国国家航空航天局和Rackspace合作研发的，以Ap
 项目。
 
 OpenStack是一个云平台管理的项目，它不是一个软件。这个项目由几个主要的组件组合起来完成一些具体的工作。
-
+\begin{figure}[htbp]
+\centering\includegraphics[scale=0.5]{openstack}
+\caption{openstack的组件关系图}\label{fig:openstack}
+\end{figure}
 OpenStack是一个旨在为公共及私有云的建设与管理提供软件的开源项目。它的社区拥有超过130家企业及1350位开发者，这
 些机构与个人都将OpenStack作为基础设施即服务（简称IaaS）资源的通用前端。OpenStack项目的首要任务是简化云的部
 署过程并为其带来良好的可扩展性。OpenStack的核心组件有以下9个：
@@ -39,7 +42,10 @@ eutron-l3-router使用的网络带宽，glance，cinder，swift等租户使用�
 \subsection{Mesos}
 
 Apache Mesos由四个组件组成，分别是Mesos-master，Mesos-slave，framework和executor。
-
+\begin{figure}[htbp]
+\centering\includegraphics[scale=0.5]{Mesos}
+\caption{Mesos的组件关系图}\label{fig:openstack}
+\end{figure}
 Mesos-master是整个系统的核心，负责管理接入mesos的各个framework（由frameworks\_manager管理）和 slave（由slaves\_manager管理），并将slave上的资源按照某种策略分配给framework（由独立插拔模块Allocator管 理）。
 
 Mesos-slave负责接收并执行来自mesos-master的命令、管理节点上的mesos-task，并为各个task分配资源。 mesos-slave将自己的资源量发送给mesos-master，由mesos-master中的Allocator模块决定将资源分配给哪个 framework，当前考虑的资源有CPU和内存两种，也就是说，mesos-slave会将CPU个数和内存量发送给mesos-master，而用 户提交作业时，需要指定每个任务需要的CPU个数和内存量，这样，当任务运行时，mesos-slave会将任务放到包含固定资源的linux container中运行，以达到资源隔离的效果。很明显，master存在单点故障问题，为此，mesos采用了zookeeper解决该问题。
@@ -50,6 +56,10 @@ Executor主要用于启动框架内部的task。由于不同的框架，启动ta
 
 \subsection{YARN}
 YARN是下一代MapReduce，即MRv2，是在第一代MapReduce基础上演变而来的，主要是为了解决原始Hadoop扩展性较差，不支持多计算框架而提出的。它完全不同于Hadoop MapReduce，所有代码全部重写而成。整个平台由Resource Manager（master，功能是资源分配）和Node Manager组成（slave，功能是节点管理）。较于HadoopMapReduce，其最大特点是将JobTracker拆分成Resource Manager和Application Master，其中Resource Manager是全局的资源管理器，仅负责资源分配（由于Resource Manager功能简单，所以不会严重制约系统的扩展性），而Application Master对应一个具体的application（如Hadoop job， Spark Job等），主要负责application的资源申请，启动各个任务和运行状态监控（没有调度功能）。
+\begin{figure}[htbp]
+\centering\includegraphics[scale=0.5]{Yarn}
+\caption{YARN的组件关系图}\label{fig:Yarn}
+\end{figure}
 
 $\bullet$ ResourceManager
 
@@ -74,7 +84,10 @@ ApplicationMaster是一个框架特殊的库，对于Map-Reduce计算模型而�
 \section{资源管理抽象模型}
  
 资源管理调度模型如图所示
-
+\begin{figure}[htbp]
+\centering\includegraphics[scale=0.5]{SchedModel}
+\caption{资源管理与系统的抽象模型}\label{fig:SchedModel}
+\end{figure}
 图中说明了一个资源管理与系统的抽象模型。从概念上讲资源管理与调度系统的主要目的是根据用户任务的请求，
 从集群中分配资源。目前资源分配的主要资源主要包括内存,CPU,网络和IO资源等.而资源调度的模型主要涉及3个要素
 资源组织模型,调度算法和任务组织方式。
