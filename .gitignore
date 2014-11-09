@@ -141,3 +141,4 @@ examples/xdu*.eps
 *.DS_Store
 *.swp
 *.tar.gz
+*.pyc
