@@ -142,3 +142,4 @@ examples/xdu*.eps
 *.swp
 *.tar.gz
 *.pyc
+.idea
