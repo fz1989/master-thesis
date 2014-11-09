@@ -14,7 +14,7 @@ class Task(object):
 
 def get_task_list():
     task_list = []
-    for i in range(0,25):
+    for i in range(0,30):
         cpu = numpy.random.randint(1,8)
         mem = numpy.random.randint(1,8)
         task_list.append(Task(cpu, mem))
@@ -23,4 +23,4 @@ def get_task_list():
 if __name__ == "__main__":
     task_list = get_task_list()
     for task in task_list:
-        print task.cpu, task.mem
+        print "%d\t%d" % (task.cpu, task.mem)

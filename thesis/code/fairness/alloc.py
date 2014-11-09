@@ -47,7 +47,7 @@ class HostManager(object):
     def output(self):
         self.jains()
         for host in self.host_list:
-            print host.used_cpu, host.used_mem, host.domain_share
+            print ("%d\t%d\t%lf") % (host.used_cpu, host.used_mem, host.domain_share)
         print "domain_jains", self.domain_jains
         print "cpu_jains", self.cpu_jains
         print "mem_jains", self.mem_jains
