@@ -23,7 +23,6 @@
 其中工作站的配置如下所示：
 \begin{table}[htp]
 \begin{center}
-\caption{计算节点的配置}
 \begin{tabular}{|c|c|}
 \hline
 CPU & Intel\textregistered Xeon E5-2620 2.0GHZ\\
@@ -36,7 +35,7 @@ CPU & Intel\textregistered Xeon E5-2620 2.0GHZ\\
 \hline
 \end{tabular}
 \end{center}
-
+\caption{计算节点的配置}
 \label{default}
 \end{table}
 
@@ -88,45 +87,131 @@ Python的科学计算类库。Python scipy的科学计算应用。包括了数�
 本文从资源分配的公平性，资源利用情况和任务实际执行性能这
 三个方面对CBDRF进行了测试和仿真。实验模拟生成若干个任务的请求，
 分别采用openstack的资源调度器和CBDRF的调度器经行
-对比。对比的结果如所示。
+对比。
 \subsection{资源公平性}
-首先对分配的公平性进行测试。其结果如图所示
+首先对分配的公平性进行测试。测试采用随机生成符合正态分布的30个任务对在上述环境的
+云计算openstack环境进行虚拟机分配的实验。采用相同的30个任务，分别采用不同的调度
+算法进行分析和测试。
 
-实验结果表明，基于DRF算法的分配算法在多资源的分配情况上与openstack的filter\_scheduler
-相比，如果任务的请求对资源的需求的异质性越大，可以发现原始的基于单资源负载
+首先是，传统的单资源的分配，可以看到，基于Ram进行最大最小原则进行分配的算法确实
+在针对内存这一个指标中做到了较优的结果，内存分配在各个物理机之间平均分配。但是，但
+并且在任务负重增大的情况下，平台的瓶颈从内存变成CPU时，这种基于单资源的算法无法适
+应这种变化。
+\begin{figure}[htbp]
+\centering\includegraphics[width=0.8\textwidth]{FilterAlloc-crop}
+\caption{Filter算法的分配结果}\label{fig:FilterAlloc}
+\end{figure}
+
+接下来，是CBDRF算法的分配的结果，如图所示，CBDRF
+考虑了作业需求的主导资源，可以看到，CBDRF的分配，整体比较平滑，各个资源间的
+差距不大，并且在任务负重增大的情况下，平台的瓶颈从内存变成CPU时，算法可以很好
+的适应这种变化。
+\begin{figure}[htbp]
+\centering\includegraphics[width=0.8\textwidth]{CBDRFalloc-crop}
+\caption{CBDRF算法的分配的结果}\label{fig:CBDRFalloc}
+\end{figure}
+
+
+进一步分析，计算各个节点上的domainantShare，CBDRF算法的分配算法的domainantShare较openstack
+的filter有非常均衡，而基于内存的单资源的分配上，filter算法明显无法做到相应的结果。
+由此得出，如果任务的请求对资源的需求的异质性越大，可以发现原始的基于单资源负载
 均衡的调度算法在多资源的情况下分配的很不均衡，基于单资源的排序算法往往会导致其他
 资源的负载均衡被破坏。从这里看出，基于DRF的多资源算法可以很好的调和异质任务间资源需求
 的差距，同时可以保障分配均有良好的资源情况。
+\begin{table}[htp]
+\caption{分配算法的分配结果}
+\begin{center} 
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\multicolumn{3}{|c|}{CBDRF分配} & \multicolumn{3}{|c|}{Filter分配} \\
+\hline
+CPU & 内存 & domainant\_share &CPU & 内存 & domainant\_share\\
+\hline
+14&21&0.072917&13&20&0.067708\\
+\hline
+13&12&0.067708&11&14&0.057292\\
+\hline
+13&12&0.067708&15&14&0.078125\\
+\hline
+15&15&0.078125&12&14&0.0625\\
+\hline
+15&10&0.078125&7&16&0.036458\\
+\hline
+15&28&0.078125&16&17&0.083333\\
+\hline
+15&14&0.078125&23&17&0.119792\\
+\hline
+15&18&0.078125&18&18&0.09375\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
 
-
-该图计算了基于CBDRF在资源分配的时各个计算节点的domainantShare的情况。
-从图上可以看出，基于CBDRF上各个物理机的domainantShare非常均衡，稳定在25\%左右，
-而原始的openstack的dominantShare则相差较大。表明，利用max-min进行公平性的
-分配是合理比并且在实际中获取了不错的负载效果。
+\begin{table}[htp]
+\caption{分配算法的Jain 's的系数}
+\begin{center} 
+\begin{tabular}{|c|c|c|c|}
+\hline
+\multicolumn{2}{|c|}{CBDRF分配} & \multicolumn{2}{|c|}{Filter分配} \\
+\hline
+domain\_jains& 0.996458710066&domain\_jains&0.909810126582\\
+\hline 
+cpu\_jains& 0.996458710066&cpu\_jains&0.909810126582\\
+\hline
+mem\_jains& 0.89588634436&mem\_jains&0.984389561976\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
 
 最后利用了Jain's系数计算了各个资源的分配的负载情况，可以看出，基于
 CBDRF的分配的各个物理机上的公平指数较openstack的filter\_scheuler有较好的提升，
+在CPU和整体的两个角度均要好于只基于内存考虑的filter算法。而
 openstack的分配在单个内存的考虑上的负载较为平衡，但其他资源的考虑有所不足。
-
 \subsection{资源利用率}
 接下来针对DAG任务的资源利用情况进行模拟和仿真，任务采用多算法的协同求解的PO和MOM算法
-进行测试得到的情况如图所示。
+进行测试得到的情况如图所示。模拟生成100个不同的任务的基于多算法协同求解的PO和MoM任务进行
+计算和统计。进行调度和执行，同时记录集群的实时情况。
+\begin{figure}[htbp]
+\centering\includegraphics[width=0.8\textwidth]{RequestCPU-crop}
+\caption{CPU对比}\label{fig:RequestCPU}
+\end{figure}
+\begin{figure}[htbp]
+\centering\includegraphics[width=0.8\textwidth]{RequestMem-crop}
+\caption{内存对比}\label{fig:RequestMem}
+\end{figure}
 
-Graph1散点图查看DAG任务资源分配情况，实验结果表明，如果不进行合并操作的资源请求。整个
-云平台的系统的资源几乎均是整个资源的叠加，而采用了合并操作的CBDRF算法来看，
-基本上资源的整个情况为多个资源请求的最大值，在优化方面使得集群的被占用空闲
-计算情况减少。
+考虑请求资源的优化，上图描述了任务中前20个任务的资源请求解析情况。
+这是一个典型的DAG关联的任务。实验表明如果采用基于Merger的合并优化，整个系统的约50\%的作业的请求可以被优化，
+若果不考虑DAG作业的相关性，不采取任何优化进行系统的调度，将使得系统整体的CPU和内存
+均有所提升，造成大量的空闲资源。
+
 从整个平台可分配的任务数进行统计，由于CBDRF采用了资源复用的优化，使得一个DAG任务
 不会一次得到全部的资源请求。而原始的DRF或是filter\_scheduler均未采用上述的优化，使得
-在资源的分配过程中大量的资源被空闲计算占用，使得云计算平台的资源的可分配资源大大减少。
+在资源的分配过程中大量的资源被空闲计算占用，使得云计算平台的资源的利用率得以提高，使得
+整个平台的可以同时运行的任务数大大提升，降低整体的运行时间。另外，由于可运行的任务数的提高
+以及资源利用率的提升，使得系统的整体运行性能较原始有所提高。
+\begin{figure}[htbp]
+\centering\includegraphics[width=0.8\textwidth]{runTimeLoad-crop}
+\caption{任务运行统计}\label{fig:runTimeLoad}
+\end{figure}
 
-最后，计算测试资源实际利用情况。这里统计实际的空闲情况。采用基于多算法协同求解的PO和MoM任务进行
-计算和统计。我们可以发现，由于任务的特殊性，原始不考虑DAG关系的任务的实际平台计算的利用情况大致
-仅为采用合并操作的一半左右。这是由于大量的后置任务在等待前置任务的结束运行，造成了平台
-计算资源的浪费。
+最后，计算测试资源实际利用情况。这里统计实际的空闲情况。
+我们可以发现，原始不考虑DAG关系的空闲等待的作业数情况大致
+仅为采用合并操作的一倍左右。这是由于大量的后置任务在等待前置任务的结束运行，
+而此时这些后置任务却已经分配到资源，产生了大量的空闲等待作业，降低了系统的运行性能。
+\begin{figure}[htbp]
+\centering\includegraphics[width=0.8\textwidth]{runTimeIdle-crop}
+\caption{空闲作业统计}\label{fig:runTimeIdle}
+\end{figure}
 
 \subsection{任务执行性能}
-最后对任务执行的性能进行测试，这次测试采用通信量较多的FDTD算法的程序进行测试。
+最后对任务执行的性能进行测试，这次测试采用通信量较多的FDTD算法的程序进行测试。实验
+采用了20个FDTD算法任务进行调度，统计不同调度算法下，任务的执行时间。
+\begin{figure}[htbp]
+\centering\includegraphics[width=0.8\textwidth]{TaskPerformance-crop}
+\caption{运行性能统计}\label{fig:TaskPerformance}
+\end{figure}
 
 FDTD算法是典型的通信关联任务，采用通信的基于MPI的多节点程序进行测试。测试进行
 20个任务进行调度，计算其运行的平均时间。实验结果表明，基于关联规则合并的CBDRF
@@ -134,30 +219,11 @@ FDTD算法是典型的通信关联任务，采用通信的基于MPI的多节点�
 优化进一步加大。原始的调度只考虑负载的运行状态，忽略了任务之间通信的关联性，
 导致任务通信的代价成为计算性能的瓶颈。而CBDRF基于关联任务的合并，使得任务之间的数据局部性
 得到了良好的保障，提高了整体的计算性能。
-14  21  0.072917
-13  12  0.067708
-13  12  0.067708
-15  15  0.078125
-15  10  0.078125
-15  28  0.078125
-15  14  0.078125
-15  18  0.078125
-domain_jains 0.996458710066     
-cpu_jains 0.996458710066        
-mem_jains 0.89588634436     
 
-13  20  0.067708
-11  14  0.057292
-15  14  0.078125
-12  14  0.0625
-7   16  0.036458
-16  17  0.083333
-23  17  0.119792
-18  18  0.09375
-domain_jains 0.909810126582     
-cpu_jains 0.909810126582        
-mem_jains 0.984389561976        
-
+\section{本章小结}
+本章在由8个工作站构成的计算节点和4台pc机组成的网络和控制节点的openstack平台环境下，
+在其平台上针对资源公平性，资源利用率和任务执行性能进行了测试和仿真。
+实验表明CBDRF调度策略可以提高平台的利用率和执行性能。
 
 %% ----------------------------------------------------------------------
 %%% END OF FILE 

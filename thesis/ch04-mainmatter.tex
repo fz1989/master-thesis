@@ -45,7 +45,7 @@ CPU，内存，网络和硬盘数据。任务之间因为程序的不同，导�
 效率至少是异地跨网段MPI执行效率的7倍，最差的时候多达35倍。还有一种关联任务虽然是有向的单向边形式存在，但是其互相依赖，
 使得在途中构成了一个回路，这几个任务正是图论中对强联通分量的定义。所以这也是一种通信关联任务。
 \begin{figure}[htbp]
-\centering\includegraphics[scale=1]{CBTask}
+\centering\includegraphics[scale=1]{CBTask-crop}
 \caption{通信关联任务的两种类型}\label{fig:CBTask}
 \end{figure}
 
@@ -196,7 +196,7 @@ $TS\left({ts}_{1},{ts}_{2},…{ts}_{k}\right )$，云计算平台物理机向量
 \end{enumerate}
 下图展示了一个计算任务类型的解析图
 \begin{figure}[htbp]
-\centering\includegraphics[scale=1]{TaskGraph}
+\centering\includegraphics[scale=1]{TaskGraph-crop}
 \caption{计算任务的解析图}\label{fig:CBTaskGraph}
 \end{figure}
 将任务的运行和关联关系抽象完毕，借助图论的相关知识，同时结合资源调度分配的原则，我们进行任务
@@ -303,14 +303,14 @@ $TS\left({ts}_{1},{ts}_{2},…{ts}_{k}\right )$，云计算平台物理机向量
 前置任务和后置任务是通信关联关系，那么这两个任务对资源的请求的合并时两个任务资源请求的均必须得到满足。所以中情况
 下的资源的合并时2个任务资源请求的线性叠加。
 \begin{figure}[htbp]
-\centering\includegraphics[width=13cm]{MergeCase3}
+\centering\includegraphics[width=0.618\textwidth]{MergeCase3-crop}
 \caption{通信关任务的合并}\label{fig:MergeCase3}
 \end{figure}
 
 前置任务和后置任务是DAG关联关系，那么这个两个任务的资源请求时DAG关系。
 如果这两个任务不是被合并的历史。那么比较前置任务和后置任务的大小情况，保留较大的。
 \begin{figure}[htbp]
-\centering\includegraphics[width=13cm]{MergeCase2-1}
+\centering\includegraphics[width=0.618\textwidth]{MergeCase2-1-crop}
 \caption{DAG任务的情形1合并}\label{fig:MergeCase2-1}
 \end{figure}
 若果前置任务和后置任务中存在一个时已经被合并的任务，那么按照以下的规则进行合并。本文以后置为合并的为例，
@@ -319,24 +319,24 @@ $TS\left({ts}_{1},{ts}_{2},…{ts}_{k}\right )$，云计算平台物理机向量
 资源需求中存在各项资源需求均小于前置资源请求的任务请求序列。那么在后置的历史中忽略其中的后置的一项资源请求。合并的结果
 结果为后置任务的请求向量与忽略的资源向量的差值雨前置资源需求的和。
 \begin{figure}[htbp]
-\centering\includegraphics[width=13cm]{MergeCase2-2}
+\centering\includegraphics[width=0.618\textwidth]{MergeCase2-2-crop}
 \caption{DAG任务的情形2合并}\label{fig:MergeCase2-2}
 \end{figure}
 相反的如果前置资源存在小于后置资源的某一项任务时，忽略
 此前置的任务的资源需求。
 \begin{figure}[htbp]
-\centering\includegraphics[width=13cm]{MergeCase2-3}
+\centering\includegraphics[width=0.618\textwidth]{MergeCase2-3-crop}
 \caption{DAG任务的情形3合并}\label{fig:MergeCase2-3}
 \end{figure}
 如果不是上述的两种情况，则按照2个通信关联任务进行合并。
 \begin{figure}[htbp]
-\centering\includegraphics[width =13cm]{MergeCase2-4}
+\centering\includegraphics[width=0.618\textwidth]{MergeCase2-4-crop}
 \caption{DAG任务的情形4合并}\label{fig:MergeCase2-4}
 \end{figure}
 
 前置任务和后置任务的关系时无关联关系。那么此时采取基于通信关联任务进行合并。
 \begin{figure}[htbp]
-\centering\includegraphics[width=13cm]{MergeCase1}
+\centering\includegraphics[width=0.618\textwidth]{MergeCase1-crop}
 \caption{无关联关系任务的合并}\label{fig:MergeCase1}
 \end{figure}
 由于合并DAG作业必须在有向无环图上进行。所以合并的顺序十分重要，CBDRF的合并顺序和合并法则按照如下的情况进行处理：
@@ -349,7 +349,7 @@ $TS\left({ts}_{1},{ts}_{2},…{ts}_{k}\right )$，云计算平台物理机向量
 的中心调度器，设计并实现了基于关联关系的主资源调度算法。在该算法的基础之上，进一步的实现了基于关联关系的主资源调度器。
 该调度器主要包含以下三个子模块，资源管理控制器，任务调度解析起喝资源调度迭代控制器。
 \begin{figure}[htbp]
-\centering\includegraphics[width=13cm]{CBDRFDesign}
+\centering\includegraphics[width=0.618\textwidth]{CBDRFDesign-crop}
 \caption{CBDRF调度系统的组成}\label{fig:CBDRFDesign}
 \end{figure}
 \subsection{资源管理控制器}
@@ -407,7 +407,7 @@ $\bullet$ 调度迭代控制器
 \item 迭代终止时，返回最终的调度结果。
 \end{enumerate}
 \begin{figure}[htbp]
-\centering\includegraphics[scale=0.618]{CBDRFIter}
+\centering\includegraphics[scale=0.618]{CBDRFIter-crop}
 \caption{调度迭代器的迭代流程}\label{fig:CBDRFIter}
 \end{figure}
 
