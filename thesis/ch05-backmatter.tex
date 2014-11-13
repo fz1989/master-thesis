@@ -23,6 +23,7 @@
 其中工作站的配置如下所示：
 \begin{table}[htp]
 \begin{center}
+\caption{计算节点的配置}
 \begin{tabular}{|c|c|}
 \hline
 CPU & Intel\textregistered Xeon E5-2620 2.0GHZ\\
@@ -35,13 +36,13 @@ CPU & Intel\textregistered Xeon E5-2620 2.0GHZ\\
 \hline
 \end{tabular}
 \end{center}
-\caption{计算节点的配置}
 \label{default}
 \end{table}
 
 网络和控制节点的配置如下表所示
 \begin{table}[htp]
 \begin{center}
+\caption{网络节点和控制节点配置}
 \begin{tabular}{|c|c|}
 \hline
 CPU & Intel\textregistered Core TM i5-3470 3.2GHZ\\
@@ -54,7 +55,6 @@ CPU & Intel\textregistered Core TM i5-3470 3.2GHZ\\
 \hline
 \end{tabular}
 \end{center}
-\caption{网络节点和控制节点配置}
 \label{default}
 \end{table}
 
@@ -98,7 +98,7 @@ Python的科学计算类库。Python scipy的科学计算应用。包括了数�
 并且在任务负重增大的情况下，平台的瓶颈从内存变成CPU时，这种基于单资源的算法无法适
 应这种变化。
 \begin{figure}[htbp]
-\centering\includegraphics[width=0.8\textwidth]{FilterAlloc-crop}
+\centering\includegraphics[width=0.618\textwidth]{FilterAlloc-crop}
 \caption{Filter算法的分配结果}\label{fig:FilterAlloc}
 \end{figure}
 
@@ -107,7 +107,7 @@ Python的科学计算类库。Python scipy的科学计算应用。包括了数�
 差距不大，并且在任务负重增大的情况下，平台的瓶颈从内存变成CPU时，算法可以很好
 的适应这种变化。
 \begin{figure}[htbp]
-\centering\includegraphics[width=0.8\textwidth]{CBDRFalloc-crop}
+\centering\includegraphics[width=0.618\textwidth]{CBDRFalloc-crop}
 \caption{CBDRF算法的分配的结果}\label{fig:CBDRFalloc}
 \end{figure}
 
@@ -119,8 +119,8 @@ Python的科学计算类库。Python scipy的科学计算应用。包括了数�
 资源的负载均衡被破坏。从这里看出，基于DRF的多资源算法可以很好的调和异质任务间资源需求
 的差距，同时可以保障分配均有良好的资源情况。
 \begin{table}[htp]
-\caption{分配算法的分配结果}
 \begin{center} 
+\caption{分配算法的分配结果}
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
 \multicolumn{3}{|c|}{CBDRF分配} & \multicolumn{3}{|c|}{Filter分配} \\
@@ -148,8 +148,8 @@ CPU & 内存 & domainant\_share &CPU & 内存 & domainant\_share\\
 \end{table}
 
 \begin{table}[htp]
-\caption{分配算法的Jain 's的系数}
 \begin{center} 
+\caption{分配算法的Jain 's的系数}
 \begin{tabular}{|c|c|c|c|}
 \hline
 \multicolumn{2}{|c|}{CBDRF分配} & \multicolumn{2}{|c|}{Filter分配} \\
@@ -173,11 +173,11 @@ openstack的分配在单个内存的考虑上的负载较为平衡，但其他�
 进行测试得到的情况如图所示。模拟生成100个不同的任务的基于多算法协同求解的PO和MoM任务进行
 计算和统计。进行调度和执行，同时记录集群的实时情况。
 \begin{figure}[htbp]
-\centering\includegraphics[width=0.8\textwidth]{RequestCPU-crop}
+\centering\includegraphics[width=0.618\textwidth]{RequestCPU-crop}
 \caption{CPU对比}\label{fig:RequestCPU}
 \end{figure}
 \begin{figure}[htbp]
-\centering\includegraphics[width=0.8\textwidth]{RequestMem-crop}
+\centering\includegraphics[width=0.618\textwidth]{RequestMem-crop}
 \caption{内存对比}\label{fig:RequestMem}
 \end{figure}
 
@@ -192,7 +192,7 @@ openstack的分配在单个内存的考虑上的负载较为平衡，但其他�
 整个平台的可以同时运行的任务数大大提升，降低整体的运行时间。另外，由于可运行的任务数的提高
 以及资源利用率的提升，使得系统的整体运行性能较原始有所提高。
 \begin{figure}[htbp]
-\centering\includegraphics[width=0.8\textwidth]{runTimeLoad-crop}
+\centering\includegraphics[width=0.618\textwidth]{runTimeLoad-crop}
 \caption{任务运行统计}\label{fig:runTimeLoad}
 \end{figure}
 
@@ -201,7 +201,7 @@ openstack的分配在单个内存的考虑上的负载较为平衡，但其他�
 仅为采用合并操作的一倍左右。这是由于大量的后置任务在等待前置任务的结束运行，
 而此时这些后置任务却已经分配到资源，产生了大量的空闲等待作业，降低了系统的运行性能。
 \begin{figure}[htbp]
-\centering\includegraphics[width=0.8\textwidth]{runTimeIdle-crop}
+\centering\includegraphics[width=0.618\textwidth]{runTimeIdle-crop}
 \caption{空闲作业统计}\label{fig:runTimeIdle}
 \end{figure}
 
@@ -209,7 +209,7 @@ openstack的分配在单个内存的考虑上的负载较为平衡，但其他�
 最后对任务执行的性能进行测试，这次测试采用通信量较多的FDTD算法的程序进行测试。实验
 采用了20个FDTD算法任务进行调度，统计不同调度算法下，任务的执行时间。
 \begin{figure}[htbp]
-\centering\includegraphics[width=0.8\textwidth]{TaskPerformance-crop}
+\centering\includegraphics[width=0.618\textwidth]{TaskPerformance-crop}
 \caption{运行性能统计}\label{fig:TaskPerformance}
 \end{figure}
 

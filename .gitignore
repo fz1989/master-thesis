@@ -109,8 +109,8 @@ sympy-plots-for-*.tex/
 *.xdy
 
 # cls and cfg files generated for testing
-xduthesis.cls
-xduthesis.cfg
+#xduthesis.cls
+#xduthesis.cfg
 # documentation
 xduthesis.pdf
 *.pdf
