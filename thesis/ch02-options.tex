@@ -9,39 +9,39 @@
 \subsection{OpenStack云计算平台}
 
 OpenStack是最初是NASA和Rackspace的开发云计算平台，该云计算平台以Apache Lincese开源协议发布，是一个自由的开源项目。
-OpenStack与传统的软件不通，本质上来说不是具体某个软件，这个项目是由若干个子项目组成，这几个子项目一起构成了整个openstack项目。
+OpenStack与传统的软件不通，本质上来说不是具体某个软件，这个项目是由若干个子项目组成，这几个子项目一起构成了整个Openstack项目。
 \begin{figure}[htbp]
-\centering\includegraphics[scale=0.5]{openstack-crop}
-\caption{openstack的组件关系图}\label{fig:openstack}
+\centering\includegraphics[width=0.8\textwidth]{Openstack-crop}
+\caption{Openstack的组件关系图}\label{fig:Openstack}
 \end{figure}
 OpenStack是一个开放的云计算开源项目,该项目的目的是为公有云和企业私有云提供开放的管理平台。
 目前全球大约有130家互联网企业和软件企业和1500多名自由软件开发者加入了维护Openstack的技术社区中。
 作为一个典型的基础设施即服务的平台，这些企业和个人均以此作为其计算平台的底层进行维护和开发。
 作为OpenStack的开发而言，该项目的重要功能是给软件开发带来简洁的云计算设施的部署方案，提供良好的可扩展性和可维护性。
-其中，OpenStack的子项目有很多，但是其核心的子项目主要有以下9个：
+其中，OpenStack的子项目有很多，器框架如图\ref{fig:Openstack}所示，但是其核心的子项目主要有以下9个：
 \begin{itemize}
 \item 计算(Compute)：Nova，Nova是OpenStack云中的计算组织控制器 。支持OpenStack云中实例（instances）生
 命周期的所有活动都由Nova处理。Nova的核心模块有Nova-api,nova-conductor,nova-scheduler等。
 其中的nova-scheduler作为nova的核心模块，该模块会根据云计算平台的负载，CPU，内存，可用区域以及网络拓扑等因素，
 根据用户的需求，采用合适的算法，从云计算平台中调度决定资源的分配决定。
-\item 对象存储(Object)：Swift，Swift是openstack的分布式对象存储服务，最初是由RackSapce开发的，后来Racksapce讲该项目
-开源并贡献给openstack社区并作为整个openstack社区的核心子项目之一。Swift项目的开始的主要作用是作为glance服务的存储后端，存储
+\item 对象存储(Object)：Swift，Swift是Openstack的分布式对象存储服务，最初是由RackSapce开发的，后来Racksapce讲该项目
+开源并贡献给Openstack社区并作为整个Openstack社区的核心子项目之一。Swift项目的开始的主要作用是作为glance服务的存储后端，存储
 虚拟机的镜像服务，现在也可以作为单独的存储服务提供给用户。而swift作为分布式对象存储服务，由于其松散的耦合设计，
 以及其支持多租户，支持对容器和对象的读写操作，因此很适合解决当前互联网大数据背景下
 的非结构化数据的存储问题。
-\item 镜像(Image):Glance,作为Openstack中的镜像管理服务存在。主要负责维护镜像存储的映射关系。在OpenStack中，glance不提供任何的存储服务。
+\item 镜像(Image)：Glance,作为Openstack中的镜像管理服务存在。主要负责维护镜像存储的映射关系。在OpenStack中，glance不提供任何的存储服务。
 他的主要作为是为读写多种后台存储镜像的后端服务提供一种抽象的接口。因此，glance还负责保存镜像的元数据态信息。
-\item 身份(Identity):Keystone(OpenStack Identity Service)是OpenStack框架中，负责身份验证、服务规则和服务令牌的功能， 它实现了OpenStack的Identity API。
-\item 网络地址管理(Network):Neutron是OpenStack核心项目之一，作为SDN网络的典型代表，负责整个openstack平台的虚拟机的虚拟化网络。
-\item 块存储(Block):Cinder，与swift服务不同，Cinder为整个云计算平台提供可可持久话的块存储服务。Cinder为整个
+\item 身份(Identity)：Keystone(OpenStack Identity Service)是OpenStack框架中，负责身份验证、服务规则和服务令牌的功能， 它实现了OpenStack的Identity API。
+\item 网络地址管理(Network)：Neutron是OpenStack核心项目之一，作为SDN网络的典型代表，负责整个Openstack平台的虚拟机的虚拟化网络。
+\item 块存储(Block)：Cinder，与swift服务不同，Cinder为整个云计算平台提供可可持久话的块存储服务。Cinder为整个
 平台中提供了块存储单元块的管理服务。在OpenStack中，建立的虚拟机的数据内容需要通过建立和挂载volume来实现数据持久化，
 而volume实现的底层是由Cinder提供的，否则该虚拟机是不能提供持久化服务的。
 \item UI管理界面(Dashboard):Horizon,Horizon基于python的Django实现，给云计算平台的服务商提供了一套可视化的webUI，能够
 使得服务提供商实时观测云计算平台的状态，负载和规模。并且能够在该UI上统一部署和使用Openstack平台上的服务。
-\item 测量(Metering):Ceilometer,主要负责对虚拟机的监控工作。Ceilometer除了主要实时采集虚拟机的CPU，内存等实时性能指标外，
+\item 测量(Metering)：Ceilometer,主要负责对虚拟机的监控工作。Ceilometer除了主要实时采集虚拟机的CPU，内存等实时性能指标外，
 还会检测neutron-l3-router使用的网络带宽情况以及各个租户在cinder，glance以及swift上使用的存储信息。
 甚至还会通过snmp来采集云计算平台宿主物理机的性能指标和支持opendaylight的网络设备信息。
-\item 编配(Orchestration):Heat，与Amazon AWS的CloudFormation类似,
+\item 编配(Orchestration)：Heat与Amazon AWS的CloudFormation类似,
 heat提供了一种高效的简洁的集群部署方案，通过heat可以采用简洁的配置和资源需求实现集群的快速部署工作。
 用户可以在heat中定义yaml模版，这些模版定义了任务的资源请求和用户对任务执行的先后次序，使得可以自动部署计算集群任务的功能。
 除此之外，利用heat可以在neutron上进行负载均衡的编排以及使用其他的网络附加功能。
@@ -49,11 +49,12 @@ heat提供了一种高效的简洁的集群部署方案，通过heat可以采用
 
 \subsection{Mesos}
 
-Apache Mesos由四个组件组成，分别是Master，Slave，Framework和executor。
+如图\ref{fig:mesos}，Apache Mesos由四个组件组成，分别是Master，Slave，Framework和executor。
 \begin{figure}[htbp]
-\centering\includegraphics[width=\textwidth]{Mesos-crop}
-\caption{Mesos的组件关系图}\label{fig:openstack}
+\centering\includegraphics[width=0.8\textwidth]{Mesos-crop}
+\caption{Mesos的组件关系图}\label{fig:mesos}
 \end{figure}
+
 Master是Apache Mesos的核心组件，其负责管理Mesos集群中的各个framework和salve，其中frame\_manager管理
 接入平台的各个framework而slaves\_manager则负责管理各个接入的slave节点。最后Master中的Allocator负责管理
 各个Slave上的资源，并将其资源抽象整合为资源池的形式分配给各个Framwork。在这里由于Master节点存在单点故障的可能，
@@ -66,7 +67,7 @@ Slave是Apache Mesos的重要组成。Slave负责管理实际的物理节点，�
 会启动具有相应资源的Linux Container来运行相应的计算任务。任务间的的资源隔离就由该Salve上的Container进行负责。
 
 Framework是指运行在该集群上的计算框架，典型的代表是Hadoop和MPI等。为了Mesos能够统一的管理整个集群的资源情况，要求这些计算框架必须通过注册的方式接入平台之中。同时
-Mesos要求这些计算框架必须有一个任务调度器来进行内部的资源分配和任务调度，同时，对于Hadoop，MPI等集群，必须修改原始的调度器。在原有的调度器基础之上，添加与Mesos交
+Mesos要求这些计算框架必须有一个任务调度器来进行内部的资源分配和任务调度\cite{ref15}，同时，对于Hadoop，MPI等集群，必须修改原始的调度器。在原有的调度器基础之上，添加与Mesos交
 互的注册接口。同时，计算框架还应实现相应的接受和请求资源接口以接受Mesos分配给框架的资源。在Mesos中，调度的层级变成了2层，首先是由Mesos将资源分配个各个框架，而后在
 各个计算框架中，进行第二层的调度，这层调度进行任务的资源分配和任务执行顺序的分配。Mesos本身提供了C++，Java和Python实现的调度器的抽象类，方便各个框架的调度器的接
 入。而在内部则采用C++实现了一个调度驱动器，各个框架通过继承的调度器与该驱动器的接口进行交互，完成框架的注册以及Framwork间资源分配的任务。
@@ -77,12 +78,12 @@ Executor是实际启动框架的执行者。在各个Salve上负责启动各个�
 
 \subsection{YARN}
 
-YARN是Hadoop2.X版本的。YARN的主要作用是解决集群的管理问题，与Hadoop不同，YARN是一个通用的计算资源管理管理平台而非单一的计算框架。整个系统主要由三个组件
+YARN是Hadoop2.X版本的。YARN的主要作用是解决集群的管理问题，与Hadoop不同，YARN是一个通用的计算资源管理管理平台而非单一的计算框架。YARN的框架如图\ref{fig:Yarn}整个系统主要由三个组件
 ResourceManager，ApplicationMaster和NodeManager组成。与Apache Mesos相类似，YARN也是一个两层的调度系统，全局的资源分配由ResourceManager分配给各个Application
 而Application就类似于Mesos中的Framework，可以是Hadoop或是Spark等。进一步，各个Application由ApplicationMaster进行再一次的任务资源分配，最终告知各个物理节点上的
 NodeManager，由各个物理节点上的NodeManager启动相应的Container运行相应的计算任务。
 \begin{figure}[htbp]
-\centering\includegraphics[width=\textwidth]{Yarn-crop}
+\centering\includegraphics[width=0.8\textwidth]{Yarn-crop}
 \caption{YARN的组件关系图}\label{fig:Yarn}
 \end{figure}
 
@@ -97,6 +98,7 @@ Mesos的Container，这里的Container是指各个资源抽象的最小单元而
 ApplicationsManager主要作用有两个，首先是当用户提交第一个该类型任务的申请时，创建相应的Container运行该Application的ApplicationMaster，第二个作用当该applicationMaster心跳
 包同步失败的时候，重新启动applicationMaster。
 ApplicationsManager负责处理client提交的job以及协商第一个container以供applicationMaster运行，并且在applicationMaster失败的时候会重新启动applicationMaster。
+
 $\bullet$ NodeManager
 
 NodeManager于Mesos的Slave相类似，NodeManager主要负责启动ResourceManager分配给ApplicationMaster运行作业的Container和汇报物理节点的资源状态。主要负责物理机上的上
@@ -105,15 +107,16 @@ NodeManager于Mesos的Slave相类似，NodeManager主要负责启动ResourceMana
 供其进行调度。
 
 同时，NodeManager还会周期性的汇报给ResourceManager的改节点的工作状态。
+
 $\bullet$ ApplicationMaster
 
 ApplicationMaster与Mesos中类似的是各个框架的Scheduler，与Mesos相似，如果某个计算框架需要在YARN上部署，必须要实现相应的ApplicationMaster。ApplicationMaster的首先周期性的会向ApplicationMaster发送心跳包来汇报自己当前的工作状态。另外Application的重要左右便是向ResourceManager提出资源请求，当ResourceManager告知分配给其相应的Container时，向被分配的Container发送相应的控制信息和该计算任务的输入数据等该Container上的NodeManager。
 
 \section{资源管理抽象模型}
  
-资源管理调度模型如图所示
+资源管理调度模型如图\ref{fig:SchedModel}所示
 \begin{figure}[htbp]
-\centering\includegraphics[width=\textwidth]{SchedModel-crop}
+\centering\includegraphics[width=0.8\textwidth]{SchedModel-crop}
 \caption{资源管理与系统的抽象模型}\label{fig:SchedModel}
 \end{figure}
 图中说明了一个资源管理与系统的抽象模型。从概念上讲资源管理与调度系统的主要目的是根据用户任务的请求，
@@ -181,7 +184,7 @@ ApplicationMaster与Mesos中类似的是各个框架的Scheduler，与Mesos相�
 分配的性能显然不如多版本并发控制的机制的并发性好。
 \end{enumerate}
 \subsection{状态共享调度器}
- 状态共享调度器是Google的Omega调度系统提出的一种资源管理与调度范型。在这种调度范型里面，各个计算框架可以
+ 状态共享调度器是Google的Omega\cite{ref33}调度系统提出的一种资源管理与调度范型。在这种调度范型里面，各个计算框架可以
  看到整个集群的所有的资源的状态。集群之间采用互相竞争的方式去获得自己所需的资源，根据自身特性采取不同的调度
  策略。为了能够克服双层调度器的缺点，状态共享调度器做了如下的工作，首先中央的调度其维护一个中央调度的共享数据，
  而在各个框架之间通过竞争的手段来验证这些数据的可访问性，而这里的“共享数据”实际上就是整个集群的实时资源使用信息。一旦引入共
@@ -263,7 +266,7 @@ FIFO策略是最简单的调度策略，提交的作业按照提交时间的先�
 可以分配给某些任务多个slot，但是区别于公平调度器，能力调度器支持作业优先级但是不提供资源的抢占机制。
 这是因为能力调度器强调的是多用户在资源上的公平而非计算资源在作业上的公平，因此牺牲多作业间公平来保证用户间分享公平。
 \subsection{延迟调度策略}
-延迟调度严格的来说并不是一个调度算法，延迟调度策略往往会作为其他策略增加调度的数据局部性，以此来增加任务的执行效率。
+延迟调度严格的来说并不是一个调度算法，延迟调度策略\cite{ref37}往往会作为其他策略增加调度的数据局部性，以此来增加任务的执行效率。
 
 其基本的的思想如下所示：
 \begin{itemize}

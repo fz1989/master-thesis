@@ -15,28 +15,28 @@
 
 \begin{cabstract}
 	
-	云计算平台可以使用户通过互联网获得海量的计算资源。用户可以在云计算平台上进行各类计算任务和查询处理任务。
-	而云计算平台的调度器作为云计算平台的核心模块，其作为变得越来越重要，面对的请求也越来越复杂。随着计算任务
+	在互联网时代，云计算是一种能将大量的计算资源整合，使得用户能够按照需要运行大量的计算任务的新兴计算模式。
+	云计算平台的调度器作为资源整合的核心模块，在优化资源，提高计算任务性能以及降低平台风险上起着重要的作用。
+	随着云计算平台上的任务运行的任务更加复杂，更加多样化，云计算平台的调度器的作用变得越来越重要。随着计算任务
 	的负载增大，云计算平台对虚拟资源的管理成为云计算平台面临的新的挑战。目前的云计算平台对于存在关联关系任务
-	的调度存在着资源利用率低，分配不公平导致负载不均衡，进而影响云计算平台性能的问题。本文重点研究了云计算平台
-	对于存在关联性关系任务的资源调度问题，对提高云计算平台的资源利用率，资源分配公平性和负载均衡提出了 CBDRF算法
-	来解决的云计算协同计算平台下的虚拟机资源调度问题。主要的研究工作有以下几个方面：
+	的调度存在着资源利用率低，分配不公平导致负载不均衡，进而影响云计算平台性能的问题。
 	
-	（1）针对云平台计算管理资源问题，结合云计算平台的结构，对云计算平台的资源调度器和调度模型和资源分配加以分析。
+	针对如何提高云计算平台资源利用率、资源分配公平性，以及负载均衡问题，提出了面向关联关系的主导资源公平性算法（CBDRF）。
+	主要的研究工作有以下几个方面：
+	
+	（1）针对云平台计算管理资源问题，结合云计算平台的结构，重点分析了资源分配的特点、平台调度模型以及平台调度器。
 
-	（2）针对云计算平台在资源管理对相关联的任务分配公平性不足，资源利用率低和性能不足的问题。本文利用图论的相关模型，
-结合最小最大原则以及DRF算法的四习总，对云计算平台的资源调度问题进行建模。在此模型基础之上，
-设计和实现了一种基于DRF和图论算法的的CBDRF调度算法。能够在任务关联公平性和执行效率之中找到平衡点，同时，
+	（2）针对云计算平台中关联任务资源分配时公平性不足、资源利用率低等问题。本文采用图论的相关模型，
+结合最小最大原则以及DRF算法，对云计算平台的资源调度问题进行建模。在此模型基础之上，
+设计实现了一种基于DRF和图论算法的的CBDRF调度算法。能够在任务关联公平性和执行效率之中平衡，
 有效的提高了资源的利用情况。
 
-	（3）在云计算平台算法的基础之上，结合云计算调度的相关研究现状和相关需求。完成了云计算调度器的设计和实现，最后
-在openstack平台上进行了实际的测试和验证。
+	（3）在实现CBDRF算法的基础之上，结合云计算调度的研究现状和需求。完成了云计算调度器的设计实现并
+在Openstack平台上进行了实际的测试验证。
 
 \end{cabstract}
-
-
 \begin{ckeywords}
-云计算，~~资源调度，~~负载均衡，~~虚拟机放置，~~资源公平性，~~关联任务~~
+云计算，~资源调度，~负载均衡，~虚拟机放置，~资源公平性，~关联任务~~
 \end{ckeywords}
 \begin{cthesistype}
 应用基础研究类
@@ -47,22 +47,24 @@
 
 \begin{eabstract}
 \noindent{
-ICloud computing platform that lets users access to vast amounts of computing resources over the Internet. On cloud computing platforms, users can conduct various computational tasks, and query processing tasks.
-And scheduling as a platform for cloud computing cloud computing platform is the core module, as it becomes more and more important, in the face of requests are getting more sophisticated. As computing tasks
-Load increases, cloud computing platform for virtual resource management becomes a new challenge for cloud computing platform. Relationship with the present cloud computing platform for tasks
-Scheduling there are low rates of resource utilisation, inequitable distribution led to uneven loading, thereby affecting the performance of cloud computing platforms. This article focuses on cloud computing platforms
-To correlation tasks with resource scheduling, cloud computing platform to improve the utilization rate of resources and equity of resource allocation and load balancing CBDRF algorithm is proposed
-To address cloud computing virtual machine resource scheduling problems in collaborative computing platforms. Major research efforts in the following areas:}\\
+In the age of the Internet, cloud computing is a way to turn a large amount of computing resources as needed which enables users to run a large number of emerging model of computing tasks.
+Scheduler of the cloud computing platform which is the core of integration modules plays an important role in optimizing resources, improving task performance and reducing risk platform.
+As the task  which is worked on the cloud computing platform becomes more and more complex, more and more diverse, the role of the scheduler becomes more and more important in cloud computing platform. 
+As computing tasks Load increases, cloud computing platform for virtual resource management becomes a new challenge for cloud computing platform. Relationship with the present cloud computing platform for tasks
+Scheduling there are low rates of resource utilisation, inequitable distribution led to uneven loading, thereby affecting the performance of cloud computing platforms.}\\
 
-\noindent{(1) management for cloud computing resources, combined with the structure of the cloud computing platform, cloud computing platform and Resource Scheduler scheduling model and resource allocation were analyzed.}\\
+\noindent{In Order to Improve resource utilization, resource allocation fairness cloud computing platforms, as well as load balancing problems, we presents correlationship-based-domainant-fairness algorithm (CBDRF).
+Major research efforts in the following areas.}\\
 
-\noindent{(2) in resource management for cloud computing platform for the associated lack of task allocation fairness, low resource utilization and performance issues. Using graph theory model
-Combined with the min-max principle and algorithm of DRF's four total acquisition, to model the resource scheduling problems with cloud computing platforms. This model is based on
-Design and implement a DRF CBDRF scheduling algorithm and graph algorithms. Able to associate tasks with balance of fairness and efficiency at the same time,
-Effectively improve the utilization of resources.}\\
+\noindent{(1) In the research of management for cloud computing resources, combined with the structure of the cloud computing platform, focuses on the characteristics of resource allocation, scheduling model platform, and the platform Scheduler.}\\
 
-\noindent{(3) in the cloud algorithm based on combination of scheduling and the research status of cloud computing and related needs. Completed the design and implementation of cloud computing Scheduler, and finally
-The openstack platform has been tested and validated.}
+\noindent{(2) To Solve the problem of the correlationship tasks in the allocation of resources for cloud computing platform of low resource utilization and insufficient equity. We use graph theory model
+Combined algorithm for min-max principle and the DRF, to model the resource scheduling problems with cloud computing platforms. Based on this Model  we 
+design and implement CBDRF scheduling algorithm which based on DRF algorithm and graph algorithms which is able to schedule the correlationship tasks with balance of fairness and efficiency,
+and we effectively improve the utilization of resources.}\\
+
+\noindent{(3) Based on the realization of CBDRF algorithm and combining cloud computing schedule research present situation and needs. we complete implementation of scheduler and
+tests the algorithm on the Openstack platform.}
 \end{eabstract}
 
 
@@ -71,7 +73,7 @@ Cloud Computing, Resource Scheduling, Load Balancing, Resource Fairness, Correla
 \end{ekeywords}
 
 \begin{ethesistype}
-Algorithm Desigin
+Applied Basic Research
 \end{ethesistype}
 
 % \tableofcontents

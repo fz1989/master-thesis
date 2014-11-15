@@ -418,7 +418,7 @@
   {1pt}%
   {\xiaosan[1.429]}}
 \renewcommand\subsection{%
-  \@startsection {subsection}{2}{2.15em}%
+  \@startsection {subsection}{2}{2.0em}%
   {0pt}%
   {1pt}%
   {\sihao[1.429]}}
@@ -426,7 +426,7 @@
 %            {\sihao}{\thesubsection}%
 %            {1ex}{}
 %\titlespacing{\subsection}%
-%    {2.15em}{1.5ex plus .1ex minus .2ex}{\wordsep}
+%    {2.1em}{1.5ex plus .1ex minus .2ex}{\wordsep}
 \renewcommand{\tableofcontents}{%
   \xdu@clearpage%
   \phantomsection%

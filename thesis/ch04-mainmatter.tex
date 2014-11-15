@@ -1,152 +1,13 @@
 \chapter{CBDRF调度系统的设计与实现}
 \label{cha:frontmatter}
-由于在集群调度时，尤其是在集群管理的第一层调度的时候，往往只考虑了资源的拆分，而对任务间的关联关系对虚拟机的调度尤其是虚拟机的摆放位置的要求往往很高，
-而传统的资源调度系统在这方面往往考虑有所不足，本章以此为切入，详细的介绍了CBDRF调度系统的动机，设计，算法，和调度流程。
+本节针对关联性任务存在的资源利用不足，性能不佳的问题，在基于图论和公平性的理论上，首先设计了CBDRF调度系统
+的调度算法，接下来给出了CBDRF调度系统核心模块的设计，并在此基础上给出了CBDRF调度系统的实现的一种方式。
 
-\section{CBDRF调度系统的提出}
-云计算它采用创新的计算模式使用户通过互联网随时获得近乎无限的计算能力和丰富多样的信息服务，它创新的商业模式使用户对计算和服务可以取用自由、按量付费。目前的云计算融合了以虚拟化、服务管 理自动化和标准化为代表的大量革新技术。云计算借助虚拟化技术的伸缩性和灵活性，提高了资源利用率，简化了资源和服务的管理和维护；利用信息服务自动化技术，将资源封装为服务交付给用户，减少了数据中心的运营成本；利用标准化，方便了服务的开发和交付，缩短了客户服务的上线时间。而云计算的虚拟机资源调度器或是正调度算法是云计算平台的重要模块，是高效的解决资源融合，共享的重要组成。
-
-目前主要有以下几种算法解决IaaS云计算平台的虚拟机资源调度策略的方法：
- \begin{enumerate}
-\item 从平台的负载角度出发，当个任务或是应用发出虚拟机资源的请求时，平台检查所有物理机上的剩余资源，
-将满足物理机请求的资源的物理机过滤出来，尽量使得各个物理机上的负载均衡。
-\item 从平台的资源的利用的效率出发，当任务或是应用发出虚拟机资源请求时，检查所有物理家上的剩余资源，
-采用最少的物理机来满足任务或是应用对资源的请求，使得任务平台整体的能够有较少的使用物理资源，减少不必要的资源浪费。
-\item 基于公平性的调度算法，以DRF算法为例的公平调度算法，主要考虑各个资源分配直接的均衡和合理，
-可以使得任务之间对资源的请求和分配达到经济学上的帕累托最优。
-\end{enumerate}
-
-而在目前的任务处理中，一般对虚拟机或是计算资源的请求
-上述种方法在解决云计算中虚拟机资源调度问题的方法有各自的局限性：
-\begin{enumerate}
-\item 负载均衡算法为了保证各个物理机上的虚拟机负载尽可能一致，会导致虚拟机的分配方案相对比较松散，导致有大量交互或是大量网络通讯的任务或应用会或得比较糟糕的网络状况，导致服务质量的下降或是任务执行的时延增加。
-\item 平台利用率的算法，尽量采用少量的物理机满足应用的虚拟机资源请求会或得比较好的资源利用情况，但是这种算法是一个典型的NP问题，求解这个问题往往会造成更高的调度代价，因此在实际的云计算平台中很少采用。
-\item DRF算法本身在资源的利用情况会造成比较多的碎片情况，导致可分配，可调度的次数有所不足，另外由于忽略了本身物理机的位置的关系，会造成了物理机资源和任务的实际运行的网络情况不匹配的。
-\end{enumerate}
-
-综上，上述三种算法均在任务的通信请求和任务执行存在关联关系的问题上的考虑均有所不足，并且各自对资源的请求分配的情况均存在自己本身不足的因素。所以对大量通信的任务请求的调度结果往往不能取得较好的性能优势。
-
-\subsection{任务的关联性}
-在大规模的协同计算平台下，任务之间往往是存在关联性的。这种关联性主要有以下的三种关联，无关联的独立任务，DAG关联任务，和通信关联任务。
-
-无关联的任务之间往往没有任何耦合关系，在计算任务时，这种任务往往是并行优化的重点作业，由于不存在任何的关联。
-这些任务对资源的请求往往比较独立，没有任何的关联性，所以在资源的申请时往往不考虑通信和数据局部性的关系。
-
-DAG关联任务是比较常见的协同作业之一，这种作业往往是把前一作业的输出作为下一作业的输入进行。这两个作业
-耦合度比较浅，仅仅上一个任务结束和下一个相关的任务开始时有耦合关系。但是由于是一种特殊的类似拓扑关系
-的耦合，导致如果上一作业没有进行完毕那么下一作业则不能开始执行，另外，由于存在一定的数据耦合，所以在大规模
-集群计算的背景下，对数据的局部性要求是比较高的，如果花费大量的时间在中间输入和输出的传输和一致性同步上，将会
-大幅的降低集群的计算性能，因此这种类型的作业极大的考虑数据的局部性。
-
-通信关联任务是最为常见的协同作业。这种作业以MPI为例，分布式的进程互相之间首先需要大量的交换中间数据。交换的频繁
-程度以用户的程序规定，一般会比较密集。并且这种作业的计算时间往往会比较长，以科研的高性能仿真实验为主。耗费大量的
-CPU，内存，网络和硬盘数据。任务之间因为程序的不同，导致中间通信的代价往往不同。但是一旦存在互相之间的通信关系，那么
-在DAG作业的基础之上，除了考虑数据的局部性之外，对于网络的拓扑情况也必须加以考虑。以MPI为例，同一局域网下的MPI的执行
-效率至少是异地跨网段MPI执行效率的7倍，最差的时候多达35倍。还有一种关联任务虽然是有向的单向边形式存在，但是其互相依赖，
-使得在途中构成了一个回路，这几个任务正是图论中对强联通分量的定义。所以这也是一种通信关联任务。
-\begin{figure}[htbp]
-\centering\includegraphics[scale=1]{CBTask-crop}
-\caption{通信关联任务的两种类型}\label{fig:CBTask}
-\end{figure}
-
-因此，在进行资源的调度的过程中，必须对资源的局部性和网络位置来考虑资源的分配，以往的资源分配往往仅仅将资源分配
-抽象成一个切蛋糕或是划分资源池的过程远远不能满足框架的计算特性。好的资源切分可以使得框架的调度结果的性能有很大的
-提升。
-
-\subsection{系统的负载均衡}
-云计算平台的一个重要的指标是计算的性能，以虚拟化为主的云计算平台上物理机的负载情况是影响虚拟机的计算性能的重要因素。
-实践证明，当物理机上的建立的虚拟机的数量越多，物理机的负载越大，该宿主机上的虚拟机的效率下降越多。
-
-当物理机上建立的虚拟机较少，内存的负载较低时，在物理机上建立虚拟机个数比较少的情况下，虚拟机的性能基本保持不错，和相同配置的物理机的性能几乎相同。
-而在此基础之上，如果继续加大虚拟机的个数，可以发现虚拟机的性能开始下降，但下降的趋势和虚拟机的个数基本成成正比关系。
-但此时单个虚拟机性能的下降的损失可以被增加的虚拟机个数所弥补。当实际的负载进一步加大，虚拟机的性能此时急剧下降，增
-加的虚拟机的个数完全不能弥补单个虚拟机性能的下降所造成的对整个集群啊性能的影响。
-
-从此可以发现，单个物理机的负载必须在一个合适的范围内。在整个集群中，如果某个调度的策略不当，使得某个物理机的负载过高。
-会使得该物理机上的运行的虚拟机的效率大大降低，从而使得在该虚拟机上实际运行的任务的效率大大降低，进而会影响与之有通信关联
-或是DAG关联任务的执行，使得整个系统的执行效率降低。所以从资源调度的角度出发考虑，应当避免某个虚拟机的负载过高的情况出现。
-
-针对系统的负载均衡，openstack的scheduler采用了filter－scheduler的策略，这个调度器的调度即就是采用基于负载均衡的角度设计的调度器
-其调度的过程主要分一下两个决策过程。
-\begin{itemize}
-\item filter：这个过程是过滤的过程。按照用户的需求，过滤掉不符合调度策略的物理机。filter的策略配置有基于内存的过滤器ram\_filter，
-基于vcpu的core\_filter等，作为云计算的调度器的调度器设计者或是平台维护者，也可以添加自己的filter的实现。
-在调度的过程中，根据调度器开发者或是平台维护者的设置来选取不同的filter，可以选择其中的一个或者多着过滤器。多个
-过滤器过滤的过程中对每个过滤器都进行一次过滤从而过滤出符合规则的调度器。
-\item weight：当过滤过程结束之后将进入weight过程，这个weight的过程的实质是按照集权本身的负载情况进行排序，每次选取负载最小的
-主机作为最终的调度结果。其中weigh的函数仍然可以由调度器设计者或是平台维护者自行定义，目前的openstack的调度器是采用的基于内存
-的负载情况考虑，选择内存负载压力最小的主机作为最终的调度结果。
-\end{itemize}
-
-其他的基于负载均衡的调度策路还有，round-robin调度策路，best-fit策略，first-fit策略，这些策略都是基于当前云计算平台
-的负载状态的所做出的调度策路。本质上使得每个物理机上的负载尽量相同，使得每台物理机的负载差异较小，不会出现单个物理机
-负载过大，降低整体云计算平台整体性能下滑。
-
-\subsection{主资源公平策略}
-主资源公平（Dominant Resource Fairness）策略是UCBerkly提出的一种基于多资源的公平的资源分配，也是作为Apache Mesos的中央调度器所采用的
-公平策略，其本质是最大最小公平的一个实现。在先前的云计算平台中大多采用的是基于单资源的公平分配，而DRF算法将这这种公平扩展向了多资源公平。
-
-对于每个用户，DRF算法首先会计算分配给每个用户各个资源维度的分享量。而某个维度上分享量的中最大的值称为该需求的主分享量（domainit share）。
-此时这个主分量的资源被叫做这个用户的主资源（domainint Resource）。对于不同类型的计算任务，其主资源的分配往往是不尽相同的，对于计算任务而言，
-其主资源时CPU，而对缓存任务而言其主资源时内存而某些MPI计算任务其带宽则是其主资源，DRF算法的主旨是使得各个主分享量尽量相同。其算法的伪代码
-算法5所示：
-\begin{algorithm} 
-\caption {DRF算法} 
-\begin{codebox}
-\Procname{$\proc{DRF allocation}()$}
-\li	$R \leftarrow \left({r}_{1},...{r}_{m} \right)$ \RComment 所有的资源，共M种
-\li	$C \leftarrow \left({c}_{1},...{c}_{m}\right)$ \RComment 已消费的资源，初始均为0
-\li	${S}_{i} (1 \leq i \leq n)$				\RComment n个待分配的主分享向量，初始均为0
-\li	${U}_{i} \leftarrow {{u}_{i,1},...{u}_{i,m}}(1 \leq i \leq n)$	\RComment 分配给i的资源数，初始为0
-\li	$i \leftarrow {argmin}_{1 \leq i \leq n} {{S}_{i}}$ \RComment 选取主分享向量最小的
-\li	${D}_{i} \leftarrow {{d}_{i},...{d}_{m}}$ \RComment 待分配的需求向量
-\li	\If $C + {D}_{i} \leq R$
-\li	\Then 
-		$C \leftarrow C + D_{i}$                  
-\li            	${U}_{i} \leftarrow {U}_{i} + {D}_{i}$ 
-\li		${S}_{i} \leftarrow \max \limits_{1 \leq j \leq m} {{{u}_{i,j}}/{r}_{j}}$ \RComment 更新主分享向量
-\li	\Else
-\li		\Return
-	\End
-\end{codebox}
-\end{algorithm} 
-
-例如对于一个拥有<9CPU, 18GB>的系统，如果此时有两个任务A，B分别要求<1CPU，4GB>和<3CPU,1GB>内存的任务，按照，此时A任务的主资源为内存，B
-任务的主资源为CPU，如果系统的资源要求尽可能全部分配，按照主资源公平算法5所述，进行5次调用，那么A任务将会分得<3CPU，12GB>内存，而B任务最终会被分配<6CPU，2GB>。
-其分配的过程如下表所示
-\begin{table}[htp]
-
-\begin{center}
-\begin{tabular}{|c|c|c|c|c|}
-\hline
-分配过程 & A的分配向量&A的主分享量&B的分配向量&B的主分享量\\
-\hline
-B & <0,0> & 0 & <3,1> & 1/3\\
-\hline
-A & <1,4> & 2/9 & <3,1> & 1/3\\
-\hline
-A & <2,8> & 4/9 & <3,1> &1/3\\
-\hline
-B & <2,8> & 4/9 & <6,2> & 2/3\\
-\hline
-A & <4,12> & 2/3 & <6,2> & 2/3\\
-\hline
-\end{tabular}
-\end{center}
-\caption{DRF的分配示例}
-\label{tab:drfexample}
-\end{table}
-
-采用DRF算法的分配的各个向量之间的公平和负载时比较均衡的，DRF算法是很好的实现的资源负载的公平性
-分配，当时DRF算法的一个重要问题如其算法的提出者所说，其仍将资源抽象成一个资源池的模型，没有考虑
-资源分配的具体位置。对不同类型的框架任务来说，往往资源分配的主机位置，通信网络状态时影响计算性能
-的重要因素。这一是限制DRF资源分配算法进一步提升的系统的空间。
-
-\section{CBDRF调度的关键算法的设计}
+\section{CBDRF算法设计}
 CBDRF调度系统的核心是其调度算法，本节首先介绍了CBDRF算法的调度流程，接下来分别介绍其中的各个核心
 调度模块，并给出调度逻辑的伪代码和流程图。
 \subsection{CBDRF调度的流程}
-CBDRF调度算法从解析用户请求开始，到最终的输出调度结果，主要经过一下9个步骤：
+CBDRF调度算法从解析用户请求开始，到最终的输出调度结果，主要经过一下10个步骤：
 \begin{enumerate}
 \item 首先，资源解析器解析用户请求，为每个请求初始化request实例。
 \item 由关联任务的解析进行解析，生成带有特殊标记的任务序列。
@@ -158,10 +19,10 @@ CBDRF调度算法从解析用户请求开始，到最终的输出调度结果，
 同时计算dominantDesire为资源向量上剩余最多的资源。
 \item 由资源调度迭代排序器和资源调度迭代器运行基于DRF算法的分配，进行迭代的调度分配资源算法。
 \item 资源调度迭代评估器利用Jain’s fairness index:简氏公平指数，计算资源请求request的dominantShare向量
-$TS\left({ts}_{1},{ts}_{2},…{ts}_{k}\right )$，云计算平台物理机向量dominantShare向量HS，记录此时的$Value = \frac{J(TS)}{J(HS)}$和分配方案。
-\item.资源调度迭代评估器计算$Value = \frac{J(TS)}{J(HS)}$，如果大于之前的最优值，记录此式的解决方案。
-\item.资源调度迭代合并器从已经任务解析的任务序列中，按照关联任务的，从而更新合并mergeHistory跳至步骤5，否则跳至步骤11.
-\item.算法结束，输出解决方案。
+$TS\left({ts}_{1},{ts}_{2},…{ts}_{k}\right )$，云计算平台物理机向量dominantShare向量$HS\left({hs}_{1},{hs}_{2},…{hs}_{n}\right )$，记录此时的$Value = \frac{J(TS)}{J(HS)}$和分配方案。
+\item 资源调度迭代评估器计算$Value = \frac{J(TS)}{J(HS)}$，如果大于之前的最优值，记录此式的解决方案。
+\item 资源调度迭代合并器从已经任务解析的任务序列中，按照关联任务的，从而更新合并mergeHistory跳至步骤6，否则跳至步骤10。
+\item 算法结束，输出解决方案。
 \end{enumerate}
 \subsection{关联任务的解析}
 关联任务的解析，是算法的预处理环节中关键的一步。这一步需要将对关联的任务的关联关系进行解析。
@@ -225,7 +86,7 @@ $TS\left({ts}_{1},{ts}_{2},…{ts}_{k}\right )$，云计算平台物理机向量
 \li	$taskGraph \leftarrow \proc{buildGraph}(taskData)$ \RComment 初始化任务关系图
 \li	\For $each \ point \ v \ in \ taskGraph$    
 \li	\Do	
-		\proc{tarjan}(v)				\RComment n个待分配的主分享向量，初始均为0
+		\proc{tarjan}(v)				
 	\End
 \li	$newGraph \leftarrow Empty$
 \li	\For $each \ scc \ s \ in \ TaskGraph$
@@ -244,7 +105,7 @@ $TS\left({ts}_{1},{ts}_{2},…{ts}_{k}\right )$，云计算平台物理机向量
 \subsection{基于DRF算法的分配}
 基于主资源分配的算法在前面已经介绍，在先前的主资源分配的算法均是将整个云计算的平台的资源抽象为资源
 池，分配资源的公平性的出发点是任务之间的平衡，也就是说，分配资源的时候主要考虑因素的是任务的资源平衡，
-而对于系统的负载的均衡主要是基于单资源，经典的例子便是openstack的filter\_scheduler。基于单资源考虑的因素
+而对于系统的负载的均衡主要是基于单资源，经典的例子便是Openstack的filter\_scheduler。基于单资源考虑的因素
 往往会造成其他资源的负载过重。
 
 另外，DRF降调一次尽可能分配所有资源，以Mesos为例，其资源的分配是全或无的分配，既在资源分配的过程中，目前的资源尽可能的全部分配出去。
@@ -281,7 +142,7 @@ $TS\left({ts}_{1},{ts}_{2},…{ts}_{k}\right )$，云计算平台物理机向量
 \li	$taskGraph \leftarrow \proc{buildGraph}(taskData)$ \RComment 初始化任务关系图
 \li	\For $each \ point \ v \ in \ taskGraph$    
 \li	\Do	
-		\proc{tarjan}(v)				\RComment n个待分配的主分享向量，初始均为0
+		\proc{tarjan}(v)				
 	\End
 \li	$newGraph \leftarrow Empty$
 \li	\For $each \ scc \ s \ in \ TaskGraph$
@@ -303,53 +164,57 @@ $TS\left({ts}_{1},{ts}_{2},…{ts}_{k}\right )$，云计算平台物理机向量
 前置任务和后置任务是通信关联关系，那么这两个任务对资源的请求的合并时两个任务资源请求的均必须得到满足。所以中情况
 下的资源的合并时2个任务资源请求的线性叠加。
 \begin{figure}[htbp]
-\centering\includegraphics[width=0.618\textwidth]{MergeCase3-crop}
+\centering\includegraphics[width=0.8\textwidth]{MergeCase3-crop}
 \caption{通信关任务的合并}\label{fig:MergeCase3}
 \end{figure}
 
 前置任务和后置任务是DAG关联关系，那么这个两个任务的资源请求时DAG关系。
 如果这两个任务不是被合并的历史。那么比较前置任务和后置任务的大小情况，保留较大的。
 \begin{figure}[htbp]
-\centering\includegraphics[width=0.618\textwidth]{MergeCase2-1-crop}
+\centering\includegraphics[width=0.88\textwidth]{MergeCase2-1-crop}
 \caption{DAG任务的情形1合并}\label{fig:MergeCase2-1}
 \end{figure}
+
 若果前置任务和后置任务中存在一个时已经被合并的任务，那么按照以下的规则进行合并。本文以后置为合并的为例，
 此时前置任务的资源请求可以作为后置任务资源请求
 的一个可能候选项。因此，在合并的时候，需要遍历后置任务合并的请求的历史，考察后置任务合并的历史。如果后置历史任务的
 资源需求中存在各项资源需求均小于前置资源请求的任务请求序列。那么在后置的历史中忽略其中的后置的一项资源请求。合并的结果
 结果为后置任务的请求向量与忽略的资源向量的差值雨前置资源需求的和。
 \begin{figure}[htbp]
-\centering\includegraphics[width=0.618\textwidth]{MergeCase2-2-crop}
+\centering\includegraphics[width=0.8\textwidth]{MergeCase2-2-crop}
 \caption{DAG任务的情形2合并}\label{fig:MergeCase2-2}
 \end{figure}
+
 相反的如果前置资源存在小于后置资源的某一项任务时，忽略
 此前置的任务的资源需求。
 \begin{figure}[htbp]
-\centering\includegraphics[width=0.618\textwidth]{MergeCase2-3-crop}
+\centering\includegraphics[width=0.8\textwidth]{MergeCase2-3-crop}
 \caption{DAG任务的情形3合并}\label{fig:MergeCase2-3}
 \end{figure}
+
 如果不是上述的两种情况，则按照2个通信关联任务进行合并。
 \begin{figure}[htbp]
-\centering\includegraphics[width=0.618\textwidth]{MergeCase2-4-crop}
+\centering\includegraphics[width=0.8\textwidth]{MergeCase2-4-crop}
 \caption{DAG任务的情形4合并}\label{fig:MergeCase2-4}
 \end{figure}
 
 前置任务和后置任务的关系时无关联关系。那么此时采取基于通信关联任务进行合并。
 \begin{figure}[htbp]
-\centering\includegraphics[width=0.618\textwidth]{MergeCase1-crop}
+\centering\includegraphics[width=0.8\textwidth]{MergeCase1-crop}
 \caption{无关联关系任务的合并}\label{fig:MergeCase1}
 \end{figure}
+
 由于合并DAG作业必须在有向无环图上进行。所以合并的顺序十分重要，CBDRF的合并顺序和合并法则按照如下的情况进行处理：
 首先如果存在强联通分量的任务还没有合并结束，选取一个强联通分量的通信关联任务的合并，此时按照哈夫曼编码的原则，每次选取最小的两个请求进行合并。
 如果不存在强联通分量的关联任务，那么进行DAG关联的合并，此时由于图已经是有向无环图，所以合并时每次选取资源需求最小的前置任务和后置任务进行合并。
-如果DAG任务合并完毕，各个无关联的任务的合并时按照哈夫曼合并法则合并即可。其合并的流程图如下所示
+如果DAG任务合并完毕，各个无关联的任务的合并时按照哈夫曼合并法则合并即可。
 
 \section{CBDRF调度系统的组成}
 在大规模的云计算平台下，云计算的资源调度在是云计算的平台的核心模块，本章从关联任务的角度出发。设计了一个基于关联任务
 的中心调度器，设计并实现了基于关联关系的主资源调度算法。在该算法的基础之上，进一步的实现了基于关联关系的主资源调度器。
 该调度器主要包含以下三个子模块，资源管理控制器，任务调度解析起喝资源调度迭代控制器。
 \begin{figure}[htbp]
-\centering\includegraphics[width=0.618\textwidth]{CBDRFDesign-crop}
+\centering\includegraphics[width=0.8\textwidth]{CBDRFDesign-crop}
 \caption{CBDRF调度系统的组成}\label{fig:CBDRFDesign}
 \end{figure}
 \subsection{资源管理控制器}
@@ -444,7 +309,9 @@ $\bullet$  调度迭代评估器
 \item memUesd表示单个物理已经使用内存总数，以GB为单位。
 \end{itemize}
 
-上述数值均通过云计算平台的监控接口获取这些数值。另外，资源管理控制器还要计算平台的dominantShare以及dominantDesire，并按照dominantShare的大小由小到大的排序资源向量表示如下所示：
+上述数值均通过云计算平台的监控接口获取这些数值。另外，资源管理控制器还要计算平台的dominantShare以及dominantDesire，并按照dominantShare的大小由小到大的排序资源向量其计算向量有
+
+所有剩余资源总量
 \begin{equation}
 R=\left({r}_{1},…,{r}_{m}\right)
 \end{equation}
@@ -490,32 +357,31 @@ scheduledHost表示请求的调度结果，通过mergeHistory解析最终请求�
 \subsection{调度迭代器的实现}
 \begin{enumerate}
 \item request实例向资源调度迭代器发送解析数据，同时资源调度迭代器向资源管理控制器发送请求，以获取云计算平台的的实时资源状态。
-将用户的请求作为要分配的资源池，当多个资源请求到来的时候将这些资源请求抽象为分配给物理机的总资源，
-同时将物理机的容量作为实际的请求向量计算每个host(物理机)的dominantShare，
-为资源向量所拥有的资源的占有率中的最大值称物理机户的dominantShare.同时计算dominantDesire为资源向量上剩余最多的资源。其计算方式如下所示：
+将用户的请求作为要分配的资源池，当多个任务资源请求到来的时候将这些资源请求抽象为分配给物理机的总资源。
+其中任务请求向量所拥有的资源的占有率中的最大值称任务的dominantShare.同时计算dominantDesire为资源向量上剩余最多的资源。其计算方式如下所示：
 
-任务请求单个物理机i请求资源总量：
+作业请求的i总请求资源总量：
 \begin{equation}
-{TR}_{i}={tr}_{i,1},…{tr}_{i,m}
+{TR}_{i}=\left({tr}_{i,1},…{tr}_{i,m}\right)
 \end{equation}
 
-任务请求物理机i的dominantShare计算方法：
+任务请求i的dominantShare计算方法：
 \begin{equation}
 {TS}_{i}=\max \limits_{1 \leq j \leq m} {{tr}_{i,j}}/{{t}_{j}}
 \end{equation}
 
-任务请求单个物理机i的dominantDesire计算方法
+任务请求i的dominantDesire计算方法
 \begin{equation}
 {TD}_{i}=\max \limits_{1 \leq j \leq m} {tr}_{i,j}
 \end{equation}
 
-任务请求资源总数向量：
+作业请求资源总数向量：
 \begin{equation}
-T={t}_{1},…{t}_{m}
+T=\left({t}_{1},…{t}_{m}\right)
 \end{equation}
 \item 由资源调度迭代排序器和资源调度迭代器运算贪心算法，进行基于DRF算法的分配操作。：
 \item 资源调度迭代评估器利用Jain’s fairness index:简氏公平指数，计算资源请求request的dominantShare向量
-$TS\left({ts}_{1},{ts}_{2},…{ts}_{k}\right )$，云计算平台物理机向量dominantShare向量HS，记录此时的$Value = \frac{J(TS)}{J(HS)}$和分配方案。其中简氏公平指数的计算方法如下所述：
+$TS\left({ts}_{1},{ts}_{2},…{ts}_{k}\right )$，云计算平台物理机向量dominantShare向量$HS\left({hs}_{1},{hs}_{2},…{hs}_{n}\right )$，记录此时的$Value = \frac{J(TS)}{J(HS)}$和分配方案。其中简氏公平指数的计算方法如下所述：
 \item 资源调度迭代评估器计算$Value = \frac{J(TS)}{J(HS)}$，如果大于之前的最优值，记录此式的解决方案。
 \item 资源调度迭代合并器从已经计算的任务强连通分量重中选取排序好的request中按照哈夫曼合并法则，选取最小的2个request进行请求合并，如果此时的任务关系图成为一个有向无环图，
 则在此有向无环图上进行拓扑排序，选取拓扑排序节点上相邻最小的request进行合并，从而更新合并mergeHistory跳至步骤3，否则跳至步骤6.
