@@ -1,4 +1,4 @@
-
+%%
 %% This is file `xduthesis.cls',
 %% generated with the docstrip utility.
 %%
@@ -96,11 +96,6 @@
 \RequirePackage{ifthen}
 \RequirePackage{titlesec,titletoc}
 \RequirePackage[CJKnumber,BoldFont]{xeCJK}
-\RequirePackage{algorithm}
-\RequirePackage{algorithmic}
-\RequirePackage{clrscode3e}
-\RequirePackage{multirow}
-\RequirePackage{multicol}
 \punctstyle{quanjiao}
 \def\CJK@null{\kern\CJKnullspace\Unicode{48}{7}\kern\CJKnullspace}
 \defaultfontfeatures{Mapping=tex-text} % after fontspec
@@ -122,9 +117,8 @@
 \fi
 \setmainfont{Times New Roman}
 \setsansfont{Arial}
+\setmonofont{Courier Std}
 \RequirePackage{xunicode,metalogo}
-%\setmonofont{Courier Std}
-\setmonofont{Times New Roman}
 \renewcommand\frontmatter{%
   \xdu@clearpage%
   \@mainmatterfalse
@@ -168,8 +162,7 @@
 \xdu@define@fontsize{qihao}{5.5bp}
 \xdu@define@fontsize{bahao}{5bp}
 \renewcommand\normalsize{\@setfontsize\normalsize{12bp}{18bp}}
- \setlength{\baselineskip}{20pt}
-%\renewcommand\baselinestretch{1.2}
+\renewcommand\baselinestretch{1.2}
 \setlength{\textwidth}{\paperwidth}
 \setlength{\textheight}{\paperheight}
 \setlength\marginparwidth{0cm}
@@ -177,17 +170,16 @@
 \addtolength{\textwidth}{-6cm}
 \setlength{\oddsidemargin}{4cm-1in}
 \setlength{\evensidemargin}{2cm-1in}
-\setlength{\voffset}{2cm-1in}
-\setlength{\topmargin}{2mm}
-\setlength{\headheight}{6mm}
-\setlength{\headsep}{4mm}
+\setlength{\topmargin}{1.45cm-1in}
+\setlength{\headheight}{20pt}
+\setlength{\headsep}{0.6cm}
 \setlength{\topskip}{0pt}
-\setlength{\footskip}{0.7cm}
-%\setlength{\skip\footins}{15pt}
+\setlength{\footskip}{1pt}
+\setlength{\skip\footins}{15pt}
 \ifxdu@doctor
 \addtolength{\textheight}{-5.0cm}
 \else
-\addtolength{\textheight}{-5.6cm}
+\addtolength{\textheight}{-4.5cm}
 \fi
 \def\xdu@clearpage{%
   \clearpage%
@@ -202,37 +194,34 @@
   \let\@oddfoot\@empty%
   \let\@evenfoot\@empty}
 \def\ps@xdu@foot@doctor{\vbox{\vskip10pt\rule{\textwidth}{1mm}%
-    \vskip1pt\rule{\textwidth}{0.5pt}\vskip1pt%
-    \hbox to\textwidth{\hfil{\xiaowu\ps@xdu@pagefoot}\hfil}}}
-\def\ps@xdu@foot@doctor{\vbox{\vskip10pt\rule{\textwidth}{1mm}%
-    \vskip1pt\rule{\textwidth}{0.5pt}\vskip1pt%
+    \vskip1pt\rule{\textwidth}{0.75pt}\vskip1pt%
     \hbox to\textwidth{\hfil{\xiaowu\ps@xdu@pagefoot}\hfil}}}
 \def\ps@xdu@front{%
   \def\@oddhead{\vbox{\hbox to\textwidth{%
         \hfil{\wuhao\noindent\leftmark}%
         \hfil{\ifxdu@doctor\xiaowu\thepage\fi}\hskip1pt}%
       \vskip2pt\ifxdu@doctor\rule{\textwidth}{1mm}\vskip1pt\fi%
-      \rule{\textwidth}{0.5pt}\vskip1pt%上面线为1pt粗
-  \rule{\textwidth}{0.5pt}}}%
+      \rule{\textwidth}{0.75pt}\vskip1pt%上面线为1pt粗
+  \rule{\textwidth}{0.75pt}}}%
   \def\@evenhead{\vbox{\hbox to\textwidth{%
         \hskip1pt{\ifxdu@doctor\xiaowu\thepage\fi}%
-        \hfil{\let\\=\relax\wuhao{西安电子科技大学硕士学位论文}}\hfil}%
+        \hfil{\let\\=\relax\wuhao\rightmark}\hfil}%
       \vskip2pt\ifxdu@doctor\rule{\textwidth}{1mm}\vskip1bp\fi%
-      \rule{\textwidth}{0.5pt}\vskip1pt%上面线为1pt粗
-  \rule{\textwidth}{0.5pt}}}%
+      \rule{\textwidth}{0.75pt}\vskip1pt%上面线为1pt粗
+  \rule{\textwidth}{0.75pt}}}%
   \def\@oddfoot{\vbox{\hbox to\textwidth{\hfil\xiaowu\thepage\hfil}}}%
   \def\@evenfoot{\vbox{\hbox to\textwidth{\hfil\xiaowu\thepage\hfil}}}}%
 \def\ps@xdu@headings{%
   \def\@oddhead{\vbox{\hbox to\textwidth{%
         \hfil{\wuhao\noindent\leftmark}\hfil{\xiaowu}\hskip1pt}%
       \vskip2pt\ifxdu@doctor\rule{\textwidth}{1mm}\vskip1bp\fi%
-      \rule{\textwidth}{0.5pt}\vskip1pt%上面线为1pt粗
-  \rule{\textwidth}{0.5pt}}}%
+      \rule{\textwidth}{0.75pt}\vskip1pt%上面线为1pt粗
+  \rule{\textwidth}{0.75pt}}}%
   \def\@evenhead{\vbox{\hbox to\textwidth{%
-        \hskip1pt{\xiaowu}\hfil{\let\\=\relax\wuhao{西安电子科技大学硕士学位论文}}\hfil}%
+        \hskip1pt{\xiaowu}\hfil{\let\\=\relax\wuhao\rightmark}\hfil}%
       \vskip2pt\ifxdu@doctor\rule{\textwidth}{1mm}\vskip1bp\fi%
-       \rule{\textwidth}{0.5pt}\vskip1pt%上面线为1pt粗
-   \rule{\textwidth}{0.5pt}}}%
+       \rule{\textwidth}{0.75pt}\vskip1pt%上面线为1pt粗
+   \rule{\textwidth}{0.75pt}}}%
   \def\@oddfoot{\vbox{\hbox to\textwidth{\hfil\xiaowu\thepage\hfil}}}%
   \def\@evenfoot{\vbox{\hbox to\textwidth{\hfil\xiaowu\thepage\hfil}}}}
 \renewcommand{\chaptermark}[1]{%
@@ -389,7 +378,7 @@
   \chaptermark{\@chapapp\hskip2ex#1}%
   \@makechapterhead{#2}}
 \def\@makechapterhead#1{\noindent%
-  \parbox[b]{\textwidth}{\vskip10mm}%
+  \parbox[b]{\textwidth}{\vskip15mm}%
   {\centering \sanhao\boldsong\bfseries%
     \ifnum \c@secnumdepth > \m@ne%
       \@chapapp\hskip1ex%
@@ -404,8 +393,8 @@
   \@makeschapterhead{#1}
   \@afterheading}
 \def\@makeschapterhead#1{\noindent%
-  \parbox[b]{\textwidth}{\vskip10mm}%
-  {\sanhao\song\bf\centering%
+  \parbox[b]{\textwidth}{\vskip15mm}%
+  {\sanhao\hei\centering%
    \interlinepenalty\@M
    #1\par\nobreak%
    \vskip4ex%
@@ -415,18 +404,11 @@
   \else\dimen0=3ex\fi%
   \@startsection {section}{1}{\z@}%
   {\dimen0}%
-  {1pt}%
-  {\xiaosan[1.429]}}
-\renewcommand\subsection{%
-  \@startsection {subsection}{2}{2.0em}%
-  {0pt}%
-  {1pt}%
+  {2ex}%
   {\sihao[1.429]}}
-%\titleformat{\subsection}[block]%
-%            {\sihao}{\thesubsection}%
-%            {1ex}{}
-%\titlespacing{\subsection}%
-%    {2.1em}{1.5ex plus .1ex minus .2ex}{\wordsep}
+\titleformat{\subsection}[block]%
+            {\xiaosi}{\thesubsection}%
+            {1ex}{}
 \renewcommand{\tableofcontents}{%
   \xdu@clearpage%
   \phantomsection%
@@ -441,6 +423,8 @@
               {\titlerule*[\xdu@dot@space]{.}\bfseries\contentspage}
 \dottedcontents{section}[5.8em]{}{2.1em}{\xdu@dot@space}
 \dottedcontents{subsection}[8.8em]{}{2.7em}{\xdu@dot@space}
+\addtocontents{lot}{\tablename}
+\addtocontents{lof}{\figurename}
 \def\xdu@define@term#1{
   \expandafter\gdef\csname #1\endcsname##1{%
     \expandafter\gdef\csname xdu@#1\endcsname{##1}}
@@ -485,7 +469,7 @@
     \vspace{15mm}
     \parbox[t]{\linewidth}{\chuhao\hei\centering\xdu@thesis@str}\par
     \vspace{15mm}
-    \includegraphics[width=44mm]{xdulogo}\par
+    \includegraphics[width=44mm]{xdlogo}\par
     \vspace{18mm}\fi
     \begin{minipage}{122mm}
       \flushleft\xiaosan[2.5]\song%
@@ -526,7 +510,7 @@
     \vspace{15mm}
     \parbox[t]{\linewidth}{\chuhao\hei\centering\xdu@thesis@str}\par
     \vspace{15mm}
-    \includegraphics[width=44mm]{xdulogo}\par
+    \includegraphics[width=44mm]{xdlogo}\par
     \vspace{18mm}
   \end{center}
   \fi
@@ -680,32 +664,18 @@
 \newenvironment{ckeywords}{\collect@body\xdu@@ckeywords}{}
 \newcommand{\xdu@@ekeywords}[1]{\long\gdef\xdu@ekeywords{#1}}
 \newenvironment{ekeywords}{\collect@body\xdu@@ekeywords}{}
-\newcommand{\xdu@@cthesistype}[1]{\long\gdef\xdu@cthesistype{#1}}
-\newenvironment{cthesistype}{\collect@body\xdu@@cthesistype}{}
-\newcommand{\xdu@@ethesistype}[1]{\long\gdef\xdu@ethesistype{#1}}
-\newenvironment{ethesistype}{\collect@body\xdu@@ethesistype}{}
-
 \newcommand{\xdu@makeabstract}{%
   \xdu@mkabstracttrue%
   \chapter*{\cabstractname}%
   \normalsize\par\xdu@cabstract\vskip12bp%
-  \setbox0=\hbox{\wuhao\song\bf\xdu@ckeywords@title}%
+  \setbox0=\hbox{\hei\xdu@ckeywords@title\hspace{1em}}%
   \noindent\hangindent\wd0\hangafter1
-  \box0{\wuhao\song\xdu@ckeywords}\vskip0bp%
-  \setbox0=\hbox{\wuhao\song\bf\xdu@cthesistype@title}%
-  \noindent\hangindent\wd0\hangafter1
-  \box0{\wuhao\song\xdu@cthesistype}%
-
+  \box0{\hei\xdu@ckeywords}%
   \chapter*{\bfseries\eabstractname}%
   \normalsize\par\xdu@eabstract\vskip12bp%
-  \setbox0=\hbox{\wuhao\bfseries Keywords:\ }%
+  \setbox0=\hbox{\bfseries Keywords:\hspace{1em}}%
   \noindent\hangindent\wd0\hangafter1
-  \box0{\wuhao\xdu@ekeywords}\vskip0bp%
-  \setbox0=\hbox{\wuhao\bf\xdu@ethesistype@title}%
-  \noindent\hangindent\wd0\hangafter1
-  \box0{\wuhao\xdu@ethesistype}%
-
-
+  \box0{\bfseries\xdu@ekeywords}%
   \xdu@mkabstractfalse%
 }
 \bibpunct{[}{]}{,}{s}{}{,}
